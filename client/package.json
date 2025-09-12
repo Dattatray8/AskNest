@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.9.0",
+    "@splinetool/react-spline": "^4.1.0",
+    "@splinetool/runtime": "^1.10.57",
     "@tailwindcss/vite": "^4.1.13",
     "axios": "^1.11.0",
     "react": "^19.1.1",
