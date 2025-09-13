@@ -8,7 +8,7 @@ function BottomBar({ tabName }) {
     <div className="dock dock-md sm:w-1/2 m-auto">
       {/* Home */}
       <button
-        className={tabName === "Home" && "dock-active"}
+        className={tabName === "Home" ? "dock-active" : ""}
         onClick={() => navigation("/")}
       >
         <svg
@@ -46,7 +46,7 @@ function BottomBar({ tabName }) {
 
       {/* Search */}
       <button
-        className={tabName === "Search" && "dock-active"}
+        className={tabName === "Search" ? "dock-active" : ""}
         onClick={() => navigation("/search")}
       >
         <svg
@@ -76,7 +76,7 @@ function BottomBar({ tabName }) {
 
       {/* Chat */}
       <button
-        className={tabName === "Chat" && "dock-active"}
+        className={tabName === "Chat" ? "dock-active" : ""}
         onClick={() => navigation("/chat")}
       >
         <svg
@@ -102,7 +102,7 @@ function BottomBar({ tabName }) {
 
       {/* Feed */}
       <button
-        className={tabName === "Feed" && "dock-active"}
+        className={tabName === "Feed" ? "dock-active" : ""}
         onClick={() => navigation("/feed")}
       >
         <svg
@@ -135,8 +135,12 @@ function BottomBar({ tabName }) {
 
       {/* Profile */}
       <button
-        className={tabName === "Profile" && "dock-active"}
-        onClick={() => navigation(`/profile/${userData?.userName}`)}
+        className={tabName === "Profile" ? "dock-active" : ""}
+        onClick={() => {
+          userData
+            ? navigation(`/profile/${userData?.userName}`)
+            : navigation("/login");
+        }}
       >
         <svg
           className="size-[1.2em]"

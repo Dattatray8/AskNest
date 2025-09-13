@@ -22,7 +22,9 @@ function Home() {
         style={{ height: "100vh" }}
         onLoad={() => setLoading(false)}
       />
-      <BottomBar tabName={"Home"} />
+      <div className="fixed bg-white w-full h-18 bottom-0 right-0">
+        <BottomBar tabName={"Home"} />
+      </div>
     </div>
   );
 }
