@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Spline from "@splinetool/react-spline";
 import Navbar from "../components/Navbar";
+import BottomBar from "../components/BottomBar";
 
 function Home() {
   const [loading, setLoading] = useState(true);
@@ -21,7 +22,7 @@ function Home() {
         style={{ height: "100vh" }}
         onLoad={() => setLoading(false)}
       />
-      <div className="fixed bottom-0 w-full bg-white h-13"></div>
+      <BottomBar tabName={"Home"} />
     </div>
   );
 }
