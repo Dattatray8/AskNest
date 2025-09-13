@@ -21,7 +21,7 @@ export const getCurrentUser = async (req, res) => {
 
 export const editProfile = async (req, res) => {
   try {
-    const { name, userName, bio, profession } = req.body;
+    const { userName, bio, profession } = req.body;
     const user = await User.findById(req.userId).select("-password");
     if (!user) {
       return res
@@ -40,7 +40,6 @@ export const editProfile = async (req, res) => {
     // } else {
     //   profileImage = user.profileImage;
     // }
-    if (name) user.name = name;
     if (bio) user.bio = bio;
     if (profession) user.profession = profession;
     if (userName) user.userName = userName;
@@ -87,7 +86,6 @@ export const search = async (req, res) => {
       _id: { $ne: req.userId },
       $or: [
         { userName: { $regex: keyword, $options: "i" } },
-        { name: { $regex: keyword, $options: "i" } },
       ],
     }).select("-password");
 

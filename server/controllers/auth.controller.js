@@ -5,9 +5,8 @@ import { generateToken } from "../config/token.js";
 
 export const signup = async (req, res) => {
   try {
-    const { name, userName, email, password, role } = req.body;
+    const { userName, email, password, role } = req.body;
     const signupRules = {
-      name: ["required"],
       userName: ["required", "unique"],
       email: ["required", "unique"],
       password: ["required"],
@@ -17,7 +16,6 @@ export const signup = async (req, res) => {
     if (!valid) return res.status(400).json({ success: false, message });
     const hashPassword = await bcrypt.hash(password, 10);
     const user = await User.create({
-      name,
       userName,
       email,
       password: hashPassword,

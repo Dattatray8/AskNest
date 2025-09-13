@@ -7,10 +7,6 @@ const userShema = new mongoose.Schema(
       required: true,
       enum: ["student", "teacher", "admin"],
     },
-    name: {
-      type: String,
-      required: true,
-    },
     userName: {
       type: String,
       unique: true,
