@@ -30,7 +30,10 @@ export const sendMessage = async (req, res) => {
 
 export const getAllMessages = async (req, res) => {
   try {
-    let chat = await Chat.findOne().populate("messages");
+    let chat = await Chat.findOne().populate({
+      path: "messages",
+      populate: { path: "sender", select: "name userName profileImage" },
+    });
     if (!chat) {
       return res.status(200).json({
         success: true,
@@ -38,12 +41,10 @@ export const getAllMessages = async (req, res) => {
         messages: [],
       });
     }
-    return res
-      .status(200)
-      .json({
-        message: "All messages fetched successfully",
-        messages: chat.messages,
-      });
+    return res.status(200).json({
+      message: "All messages fetched successfully",
+      messages: chat.messages,
+    });
   } catch (error) {
     return res
       .status(500)
