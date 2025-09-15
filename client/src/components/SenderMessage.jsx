@@ -2,12 +2,12 @@ import { useEffect, useRef } from "react";
 import user from "../assets/user.png";
 
 function SenderMessage({ message }) {
-    const sender = useRef();
-    useEffect(()=>{
-        sender.current.scrollIntoView({ behavior: "smooth" });
-    },[message?.message])
+  const sender = useRef();
+  useEffect(() => {
+    sender.current.scrollIntoView({ behavior: "smooth" });
+  }, [message?.message]);
   return (
-    <div className="w-full pr-4" ref={sender}>
+    <div className="w-[90%] self-end sm:pr-4 pr-2 mt-3" ref={sender}>
       <div className="chat chat-end">
         <div className="chat-image avatar">
           <div className="w-10 rounded-full">

@@ -1,14 +1,16 @@
 import Chat from "../models/chat.model.js";
 import Message from "../models/message.model.js";
+import { io } from "../socket.js";
 
 export const sendMessage = async (req, res) => {
   try {
     const senderId = req.userId;
     const { message } = req.body;
-    const newMessage = await Message.create({
+    let newMessage = await Message.create({
       sender: senderId,
       message,
     });
+    newMessage = await newMessage.populate("sender");
     let chat = await Chat.findOne();
     if (!chat) {
       chat = await Chat.create({ messages: [newMessage._id] });
@@ -16,6 +18,7 @@ export const sendMessage = async (req, res) => {
       chat.messages.push(newMessage._id);
       await chat.save();
     }
+    io.emit("newMessage", newMessage);
     return res.status(201).json({
       success: true,
       message: "Message send successfully",

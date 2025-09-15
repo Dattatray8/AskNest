@@ -6,10 +6,9 @@ import userRouter from "./routes/user.routes.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import messageRouter from "./routes/message.routes.js";
+import { app, server } from "./socket.js";
 
 dotenv.config();
-
-const app = express();
 
 app.use(
   cors({
@@ -24,7 +23,7 @@ app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/chat", messageRouter);
 
-app.listen(process.env.PORT, () => {
+server.listen(process.env.PORT, () => {
   dbConnection();
   console.log(`Server is listening on PORT: ${process.env.PORT}`);
 });
