@@ -1,6 +1,8 @@
 import Chat from "../models/chat.model.js";
 import Message from "../models/message.model.js";
+import User from "../models/user.model.js";
 import { io } from "../socket.js";
+import { askToGemini } from "./gemini.controller.js";
 
 export const sendMessage = async (req, res) => {
   try {
@@ -19,6 +21,24 @@ export const sendMessage = async (req, res) => {
       await chat.save();
     }
     io.emit("newMessage", newMessage);
+    let geminiRes = null;
+    if (message.slice(0, 3) === "@ai") {
+      try {
+        geminiRes = await askToGemini(message);
+        let ai = await User.findOne({ userName: "AI" }).select("-password");
+        const aiMessage = await Message.create({
+          sender: ai?._id,
+          message: geminiRes,
+        });
+        await aiMessage.populate("sender");
+        chat.messages.push(aiMessage._id);
+        await chat.save();
+
+        io.emit("newMessage", aiMessage);
+      } catch (err) {
+        console.error("Gemini error:", err.message);
+      }
+    }
     return res.status(201).json({
       success: true,
       message: "Message send successfully",
