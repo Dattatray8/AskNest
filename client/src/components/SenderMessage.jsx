@@ -11,7 +11,7 @@ function SenderMessage({ message }) {
       <div className="chat chat-end">
         <div className="chat-image avatar">
           <div className="w-10 rounded-full">
-            <img alt="Tailwind CSS chat bubble component" src={user} />
+            <img alt="Tailwind CSS chat bubble component" src={message?.sender?.profileImage || user} />
           </div>
         </div>
         <div className="chat-header">{message?.sender?.userName}</div>

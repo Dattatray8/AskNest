@@ -1,4 +1,4 @@
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, UserPen } from "lucide-react";
 import BottomBar from "../components/BottomBar";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -76,7 +76,7 @@ function Profile() {
         </div>
       ) : (
         <div className="sm:w-1/2 w-full px-8 sm:px-0 m-auto py-8 flex flex-col gap-4">
-          <div className="flex gap-10 justify-center">
+          <div className="flex gap-10 justify-center relative">
             <div className="avatar">
               <div className="w-24 rounded-full shadow-md">
                 <img src={profileData?.profileImage || user} />
@@ -88,6 +88,10 @@ function Profile() {
                 {profileData?.profession || "developer"}
               </div>
             </div>
+            <UserPen
+              className="absolute top-0 right-0 cursor-pointer"
+              onClick={() => navigation("/editprofile")}
+            />
           </div>
           <div className="p-4">{profileData?.bio || "bio"}</div>
         </div>

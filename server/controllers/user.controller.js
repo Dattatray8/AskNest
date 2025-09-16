@@ -1,3 +1,4 @@
+import uploadOnCloudinary from "../config/cloudinary.js";
 import User from "../models/user.model.js";
 
 export const getCurrentUser = async (req, res) => {
@@ -34,16 +35,16 @@ export const editProfile = async (req, res) => {
         .status(400)
         .json({ success: false, message: "UserName is exists" });
     }
-    // let profileImage;
-    // if (req.file) {
-    //   profileImage = await uploadOnCloudinary(req.file.path);
-    // } else {
-    //   profileImage = user.profileImage;
-    // }
+    let profileImage;
+    if (req.file) {
+      profileImage = await uploadOnCloudinary(req.file.path);
+    } else {
+      profileImage = user.profileImage;
+    }
     if (bio) user.bio = bio;
     if (profession) user.profession = profession;
     if (userName) user.userName = userName;
-    // user.profileImage = profileImage;
+    user.profileImage = profileImage;
     await user.save();
     return res
       .status(200)
