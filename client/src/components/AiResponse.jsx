@@ -3,6 +3,7 @@ import { useRef, useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { formatTimestamp } from "../utils/formatTimeStamp";
 
 function AiResponse({ message }) {
   const sender = useRef();
@@ -153,12 +154,7 @@ function AiResponse({ message }) {
         </div>
 
         <div className="chat-footer opacity-60 text-xs mt-1">
-          {message?.createdAt
-            ? new Date(message.createdAt).toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-              })
-            : "Now"}
+          {formatTimestamp(message?.createdAt)}
         </div>
       </div>
     </div>

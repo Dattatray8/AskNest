@@ -84,16 +84,18 @@ function Profile() {
             </div>
             <div className="flex flex-col gap-2 items-center justify-center">
               <div>{profileData?.userName}</div>
-              <div className="badge badge-soft badge-primary">
-                {profileData?.profession || "developer"}
-              </div>
+              {profileData?.profession && (
+                <div className="badge badge-soft badge-primary">
+                  {profileData?.profession}
+                </div>
+              )}
             </div>
             <UserPen
               className="absolute top-0 right-0 cursor-pointer"
               onClick={() => navigation("/editprofile")}
             />
           </div>
-          <div className="p-4">{profileData?.bio || "bio"}</div>
+          {profileData?.bio && <div className="p-4">{profileData?.bio}</div>}
         </div>
       )}
 

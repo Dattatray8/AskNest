@@ -6,6 +6,8 @@ import useCurrentUser from "../hooks/useCurrentUser";
 import Profile from "../pages/Profile";
 import Chat from "../pages/Chat";
 import EditProfile from "../pages/EditProfile";
+import Feed from "../pages/Feed";
+import AskQuestion from "../pages/AskQuestion";
 
 function AppRoutes() {
   useCurrentUser();
@@ -17,6 +19,8 @@ function AppRoutes() {
       <Route path="/profile/:userName" element={<Profile />} />
       <Route path="/chat" element={<Chat />} />
       <Route path="/editprofile" element={<EditProfile />} />
+      <Route path="/feed" element={<Feed />} />
+      <Route path="/ask" element={<AskQuestion />} />
     </Routes>
   );
 }

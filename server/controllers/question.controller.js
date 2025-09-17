@@ -16,7 +16,7 @@ export const askQuestion = async (req, res) => {
     ).populate("user");
     return res.status(201).json({
       success: true,
-      message: "Question created successfully",
+      message: "Question Posted Successfully",
       populatedQuestion,
     });
   } catch (error) {

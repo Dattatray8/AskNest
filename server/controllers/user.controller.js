@@ -41,8 +41,8 @@ export const editProfile = async (req, res) => {
     } else {
       profileImage = user.profileImage;
     }
-    if (bio) user.bio = bio;
-    if (profession) user.profession = profession;
+    user.bio = bio;
+    user.profession = profession;
     if (userName) user.userName = userName;
     user.profileImage = profileImage;
     await user.save();
