@@ -22,6 +22,10 @@ const questionSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    stopAnswering: {
+      type: Boolean,
+      default: false,
+    },
     answers: [
       {
         type: mongoose.Schema.Types.ObjectId,
