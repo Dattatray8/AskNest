@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Spline from "@splinetool/react-spline";
 import Navbar from "../components/Navbar";
 import BottomBar from "../components/BottomBar";
+import SocketContext from "../context/SocketContext";
 
 function Home() {
   const [loading, setLoading] = useState(true);
+  const { theme } = useContext(SocketContext);
 
   return (
     <div className="relative">
@@ -22,7 +24,7 @@ function Home() {
         style={{ height: "100vh" }}
         onLoad={() => setLoading(false)}
       />
-      <div className="fixed bg-white w-full h-18 bottom-0 right-0">
+      <div className="fixed w-full h-18 bottom-0 right-0" data-theme={theme}>
         <BottomBar tabName={"Home"} />
       </div>
     </div>

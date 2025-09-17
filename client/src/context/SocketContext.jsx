@@ -13,6 +13,12 @@ export const SocketProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
   const { userData } = useSelector((state) => state.user);
+  const [theme, setTheme] = useState(() => {
+    return localStorage.getItem("theme") || "light";
+  });
+  useEffect(() => {
+    localStorage.setItem("theme", theme);
+  }, [theme]);
 
   useEffect(() => {
     if (userData) {
@@ -37,6 +43,8 @@ export const SocketProvider = ({ children }) => {
   const value = {
     onlineUsers,
     socket,
+    theme,
+    setTheme,
   };
   return (
     <SocketContext.Provider value={value}>{children}</SocketContext.Provider>

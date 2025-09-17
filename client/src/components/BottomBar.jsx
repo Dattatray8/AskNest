@@ -5,8 +5,7 @@ function BottomBar({ tabName }) {
   const { userData } = useSelector((state) => state.user);
   const navigation = useNavigate();
   return (
-    <div className="dock dock-md sm:w-1/2 m-auto">
-      {/* Home */}
+    <div className="dock dock-md sm:w-1/2 m-auto h-18">
       <button
         className={tabName === "Home" ? "dock-active" : ""}
         onClick={() => navigation("/")}
@@ -44,7 +43,6 @@ function BottomBar({ tabName }) {
         <span className="dock-label">Home</span>
       </button>
 
-      {/* Search */}
       <button
         className={tabName === "Search" ? "dock-active" : ""}
         onClick={() => navigation("/search")}
@@ -74,7 +72,6 @@ function BottomBar({ tabName }) {
         <span className="dock-label">Search</span>
       </button>
 
-      {/* Chat */}
       <button
         className={tabName === "Chat" ? "dock-active" : ""}
         onClick={() => navigation("/chat")}
@@ -100,7 +97,6 @@ function BottomBar({ tabName }) {
         <span className="dock-label">Chat</span>
       </button>
 
-      {/* Feed */}
       <button
         className={tabName === "Feed" ? "dock-active" : ""}
         onClick={() => navigation("/feed")}
@@ -133,7 +129,6 @@ function BottomBar({ tabName }) {
         <span className="dock-label">Feed</span>
       </button>
 
-      {/* Profile */}
       <button
         className={tabName === "Profile" ? "dock-active" : ""}
         onClick={() => {

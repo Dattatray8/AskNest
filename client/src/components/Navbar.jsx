@@ -4,11 +4,14 @@ import { setUserData } from "../redux/userSlice";
 import { serverUrl } from "../App";
 import axios from "axios";
 import user from "../assets/user.png";
+import { useContext, useState } from "react";
+import SocketContext from "../context/SocketContext";
 
 function Navbar() {
   const { userData } = useSelector((state) => state.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { theme, setTheme } = useContext(SocketContext);
 
   const handleLogOut = async () => {
     try {
@@ -26,7 +29,38 @@ function Navbar() {
         <div className="flex-1">
           <a className="btn btn-ghost text-xl">AskNest</a>
         </div>
-        <div className="flex-none">
+        <div className="flex gap-4">
+          <div>
+            <select
+              value={theme}
+              className="select select-bordered text-[0.8rem] min-[375px]:text-[1rem]"
+              onChange={(e) => setTheme(e.target.value)}
+            >
+              <option value="theme" disabled>
+                🎨 Select Theme
+              </option>
+              <option value="light">☀️ Light</option>
+              <option value="dark">🌙 Dark</option>
+              <option value="dracula">🧛 Dracula</option>
+              <option value="synthwave">🌊 Synthwave</option>
+              <option value="cyberpunk">🤖 Cyberpunk</option>
+              <option value="retro">📼 Retro</option>
+              <option value="forest">🌲 Forest</option>
+              <option value="garden">🌿 Garden</option>
+              <option value="aqua">💧 Aqua</option>
+              <option value="nord">🧊 Nord</option>
+              <option value="luxury">💎 Luxury</option>
+              <option value="business">💼 Business</option>
+              <option value="black">⚫ Black</option>
+              <option value="halloween">🎃 Halloween</option>
+              <option value="valentine">💝 Valentine</option>
+              <option value="sunset">🌅 Sunset</option>
+              <option value="coffee">☕ Coffee</option>
+              <option value="bumblebee">🐝 Bumblebee</option>
+              <option value="emerald">💚 Emerald</option>
+              <option value="acid">⚡ Acid</option>
+            </select>
+          </div>
           {userData !== null ? (
             <div className="dropdown dropdown-end">
               <div
