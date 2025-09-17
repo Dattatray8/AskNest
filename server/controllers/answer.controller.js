@@ -23,6 +23,7 @@ export const answer = async (req, res) => {
     const newAnswer = await Answer.create({
       answer,
       user: req.userId,
+      question: questionId,
     });
     question.answers.push(newAnswer?._id);
     user.solved.push(newAnswer?._id);
@@ -40,5 +41,23 @@ export const answer = async (req, res) => {
     return res
       .status(500)
       .json({ message: `Answer Creation Failed : ${error.message}` });
+  }
+};
+
+export const allAnswers = async (req, res) => {
+  try {
+    const { questionId } = req.params;
+    const answers = await Answer.find({ question: questionId })
+      .populate("user", "userName profileImage")
+      .sort({ createdAt: -1 });
+    return res.status(200).json({
+      success: true,
+      message: "Answers Fetched Successfully",
+      answers,
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: `Failure in Answer Fetching : ${error.message}` });
   }
 };

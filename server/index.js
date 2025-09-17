@@ -8,6 +8,7 @@ import cors from "cors";
 import messageRouter from "./routes/message.routes.js";
 import { app, server } from "./socket.js";
 import questionRouter from "./routes/question.routes.js";
+import answerRouter from "./routes/answer.routes.js";
 
 dotenv.config();
 
@@ -24,6 +25,7 @@ app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/chat", messageRouter);
 app.use("/api/v1/questions", questionRouter);
+app.use("/api/v1/answers", answerRouter);
 
 server.listen(process.env.PORT, () => {
   dbConnection();
