@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { serverUrl } from "../App";
 import { useDispatch, useSelector } from "react-redux";
 import { setQuestions } from "../redux/questionSlice";
+import AutoExpandTextarea from "../components/AutoExpandTextArea";
 
 function AskQuestion() {
   const navigation = useNavigate();
@@ -31,7 +32,6 @@ function AskQuestion() {
         { question },
         { withCredentials: true }
       );
-      console.log(res);
       dispatch(setQuestions([...questions, res?.data?.populatedQuestion]));
       toast.success(res?.data?.message);
       navigation("/feed");
@@ -47,16 +47,19 @@ function AskQuestion() {
           ✕
         </button>
         <div className="text-lg font-semibold">Ask your question</div>
-        <button className="btn" disabled={question.trim().length < MIN_LENGTH} onClick={handleAskQuestion}>
+        <button
+          className="btn"
+          disabled={question.trim().length < MIN_LENGTH}
+          onClick={handleAskQuestion}
+        >
           Ask it
         </button>
       </div>
       <div className="h-[45vh] p-4">
-        <textarea
-          className="textarea w-full h-full overflow-y-auto text-[1rem] p-4"
-          value={question}
-          onChange={(e) => setQuestion(e.target.value)}
-        ></textarea>
+        <AutoExpandTextarea
+          placeholder="Write your question..."
+          onChange={(val) => setQuestion(val)}
+        />
       </div>
       <div className="px-4">
         <ul className="menu w-full menu-horizontal rounded-box">

@@ -26,6 +26,27 @@ export const askQuestion = async (req, res) => {
   }
 };
 
+export const getQuestion = async (req, res) => {
+  try {
+    const { questionId } = req.params;
+    const question = await Question.findById(questionId)
+      .populate("user", "userName profileImage")
+      .populate("answers answers.user");
+    if (!question) {
+      return res.status(404).json({ message: "Question not found" });
+    }
+    return res.status(200).json({
+      success: true,
+      message: "Question fetched successfully",
+      question,
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: `Questio Fetch Failed : ${error.message}` });
+  }
+};
+
 export const allQuestions = async (req, res) => {
   try {
     const questions = await Question.find()

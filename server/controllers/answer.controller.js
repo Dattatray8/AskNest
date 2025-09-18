@@ -34,7 +34,7 @@ export const answer = async (req, res) => {
     );
     return res.status(201).json({
       success: true,
-      message: "Answer created successfully",
+      message: "Answer Added Successfully",
       populatedAnswer,
     });
   } catch (error) {

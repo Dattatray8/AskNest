@@ -10,7 +10,7 @@ import user from "../assets/user.png";
 
 function Profile() {
   const { userName } = useParams();
-  const { profileData } = useSelector((state) => state.user);
+  const { profileData, userData } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const navigation = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -90,10 +90,12 @@ function Profile() {
                 </div>
               )}
             </div>
-            <UserPen
-              className="absolute top-0 right-0 cursor-pointer"
-              onClick={() => navigation("/editprofile")}
-            />
+            {userData?._id === profileData?._id && (
+              <UserPen
+                className="absolute top-0 right-0 cursor-pointer"
+                onClick={() => navigation("/editprofile")}
+              />
+            )}
           </div>
           {profileData?.bio && <div className="p-4">{profileData?.bio}</div>}
         </div>

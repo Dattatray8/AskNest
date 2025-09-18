@@ -8,6 +8,7 @@ import Chat from "../pages/Chat";
 import EditProfile from "../pages/EditProfile";
 import Feed from "../pages/Feed";
 import AskQuestion from "../pages/AskQuestion";
+import Answers from "../pages/Answers";
 
 function AppRoutes() {
   useCurrentUser();
@@ -21,6 +22,7 @@ function AppRoutes() {
       <Route path="/editprofile" element={<EditProfile />} />
       <Route path="/feed" element={<Feed />} />
       <Route path="/ask" element={<AskQuestion />} />
+      <Route path="/question/:qId" element={<Answers />} />
     </Routes>
   );
 }
