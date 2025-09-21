@@ -1,4 +1,4 @@
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, MoreVertical } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import useQuestion from "../hooks/useQuestion";
 import { formatTimestamp } from "../utils/formatTimeStamp";
@@ -18,6 +18,8 @@ function Answers() {
   const [answer, setAnswer] = useState("");
   const [allAnswers, setAllAnswers] = useState([]);
   const { userData } = useSelector((state) => state.user);
+  const [displayAcceptAnswerOption, setDisplayAcceptAnswerOption] =
+    useState(false);
 
   const getAllAnswers = async () => {
     try {
@@ -218,6 +220,17 @@ function Answers() {
               {ans?.user?.userName || "Anonymous"}
             </h2>
             <p className="cursor-default">{formatTimestamp(ans?.createdAt)}</p>
+            {userData?._id === question?.user?._id && (
+              <div className="justify-end relative">
+                <MoreVertical
+                  onClick={
+                    () => console.log(ans?._id)
+                    // setDisplayAcceptAnswerOption(!displayAcceptAnswerOption)
+                  }
+                  className="cursor-pointer"
+                />
+              </div>
+            )}
           </div>
         </div>
       ))}
