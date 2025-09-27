@@ -1,3 +1,4 @@
+import Answer from "../models/answer.model.js";
 import Question from "../models/question.model.js";
 import User from "../models/user.model.js";
 
@@ -68,13 +69,20 @@ export const allQuestions = async (req, res) => {
 export const iGotMyAnswer = async (req, res) => {
   try {
     const questionId = req.params.questionId;
+    const answerId = req.params.answerId;
     let question = await Question.findById(questionId).populate("user");
     if (!question) {
+      return res.status(404).json({ message: "Question not found" });
+    }
+    let answer = await Answer.findById(answerId).populate("user");
+    if (!answer) {
       return res.status(404).json({ message: "Question not found" });
     }
     const user = await User.findById(req.userId);
     if (user?._id.equals(question?.user?._id)) {
       question.stopAnswering = true;
+      answer.gotAnswer = true;
+      await answer.save();
       await question.save();
     } else {
       return res.status(403).json({ message: "You are not questions author." });

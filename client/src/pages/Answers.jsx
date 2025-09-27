@@ -18,8 +18,6 @@ function Answers() {
   const [answer, setAnswer] = useState("");
   const [allAnswers, setAllAnswers] = useState([]);
   const { userData } = useSelector((state) => state.user);
-  const [displayAcceptAnswerOption, setDisplayAcceptAnswerOption] =
-    useState(false);
 
   const getAllAnswers = async () => {
     try {
@@ -64,10 +62,10 @@ function Answers() {
     }
   };
 
-  const markAsIGotMyAnswer = async () => {
+  const markAsIGotMyAnswer = async (ansId) => {
     try {
       const res = await axios.put(
-        `${serverUrl}/api/v1/questions/${qId}/stop`,
+        `${serverUrl}/api/v1/questions/${qId}/${ansId}/stop`,
         {},
         { withCredentials: true }
       );
@@ -203,6 +201,11 @@ function Answers() {
           }`}
           key={index}
         >
+          {ans?.gotAnswer && (
+            <div className="badge badge-outline badge-warning rounded-full">
+              Accepted
+            </div>
+          )}
           <p className="w-full overflow-y-auto whitespace-pre-wrap">
             {ans?.answer}
           </p>
@@ -220,17 +223,19 @@ function Answers() {
               {ans?.user?.userName || "Anonymous"}
             </h2>
             <p className="cursor-default">{formatTimestamp(ans?.createdAt)}</p>
-            {userData?._id === question?.user?._id && (
-              <div className="justify-end relative">
-                <MoreVertical
-                  onClick={
-                    () => console.log(ans?._id)
-                    // setDisplayAcceptAnswerOption(!displayAcceptAnswerOption)
-                  }
-                  className="cursor-pointer"
-                />
-              </div>
-            )}
+            {userData?._id === question?.user?._id &&
+              !question?.stopAnswering && (
+                <details className="dropdown dropdown-end">
+                  <summary className="btn m-1">
+                    <MoreVertical />
+                  </summary>
+                  <ul className="menu dropdown-content bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
+                    <li>
+                      <a onClick={markAsIGotMyAnswer(ans?._id)}>Accept</a>
+                    </li>
+                  </ul>
+                </details>
+              )}
           </div>
         </div>
       ))}

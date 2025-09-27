@@ -12,6 +12,6 @@ const questionRouter = express(Router());
 questionRouter.post("/", isAuth, askQuestion);
 questionRouter.get("/", isAuth, allQuestions);
 questionRouter.get("/:questionId", isAuth, getQuestion);
-questionRouter.put("/:questionId/stop", isAuth, iGotMyAnswer);
+questionRouter.put("/:questionId/:answerId/stop", isAuth, iGotMyAnswer);
 
 export default questionRouter;

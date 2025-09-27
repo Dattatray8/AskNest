@@ -9,6 +9,7 @@ import EditProfile from "../pages/EditProfile";
 import Feed from "../pages/Feed";
 import AskQuestion from "../pages/AskQuestion";
 import Answers from "../pages/Answers";
+import Search from "../pages/Search";
 
 function AppRoutes() {
   useCurrentUser();
@@ -23,6 +24,7 @@ function AppRoutes() {
       <Route path="/feed" element={<Feed />} />
       <Route path="/ask" element={<AskQuestion />} />
       <Route path="/question/:qId" element={<Answers />} />
+      <Route path="/search" element={<Search />} />
     </Routes>
   );
 }
