@@ -53,6 +53,95 @@ function Profile() {
     }
   };
 
+  const roleTabs = {
+    student: [
+      { label: "My Questions", key: "questions" },
+      { label: "My Answers", key: "answers" },
+      { label: "Accepted Answers", key: "accepted" },
+      { label: "Verified Answers", key: "verified" },
+    ],
+    teacher: [
+      { label: "Spam Reports", key: "spamReports" },
+      { label: "Spam Questions", key: "spamQuestions" },
+      { label: "Spam Answers", key: "spamAnswers" },
+      { label: "Verified Answers", key: "verified" },
+    ],
+    admin: [
+      { label: "Reported Questions", key: "reportedQuestions" },
+      { label: "Reported Answers", key: "reportedAnswers" },
+      { label: "Reported Messages", key: "reportedMessages" },
+      { label: "Teacher Applications", key: "teacherApplications" },
+    ],
+  };
+
+  const renderTabContent = () => {
+    if (loading) {
+      return (
+        <div className="w-full max-h-[30vh] min-h-[10vh] flex justify-center items-center">
+          <span className="loading loading-spinner text-neutral"></span>
+        </div>
+      );
+    }
+
+    switch (navTabs) {
+      case "questions": {
+        const userQuestions = questions.filter(
+          (q) => q?.user?._id === userData?._id
+        );
+        return userQuestions.length === 0 ? (
+          <EmptyStateMessage
+            icon="❓"
+            title="You haven't asked any questions yet"
+            subtitle="Ask questions to get help from the community"
+          />
+        ) : (
+          userQuestions.map((q, index) => <Question q={q} key={index} />)
+        );
+      }
+
+      case "answers": {
+        const userAnsweredQuestions = questions.filter((q) =>
+          q.answers?.some(
+            (a) => a.user === userData?._id || a?.user?._id === userData?._id
+          )
+        );
+        return userAnsweredQuestions.length === 0 ? (
+          <EmptyStateMessage
+            icon="💬"
+            title="You haven't answered any questions yet"
+            subtitle="Share your knowledge by answering questions"
+          />
+        ) : (
+          userAnsweredQuestions.map((q, index) => (
+            <Question q={q} key={index} />
+          ))
+        );
+      }
+
+      case "accepted": {
+        const userAcceptedAnswers = questions.filter((q) =>
+          q.answers?.some(
+            (a) =>
+              (a.user === userData?._id || a?.user?._id === userData?._id) &&
+              a.gotAnswer === true
+          )
+        );
+        return userAcceptedAnswers.length === 0 ? (
+          <EmptyStateMessage
+            icon="🏆"
+            title="No accepted answers yet"
+            subtitle="When your answer gets accepted, it will show up here"
+          />
+        ) : (
+          userAcceptedAnswers.map((q, index) => <Question q={q} key={index} />)
+        );
+      }
+
+      default:
+        return <div>No data</div>;
+    }
+  };
+
   return (
     <div className="w-full h-full">
       <div className="h-16 shadow-md flex items-center sm:px-4 px-2 justify-between">
@@ -111,96 +200,21 @@ function Profile() {
 
           <div className="overflow-x-auto">
             <div className="tabs tabs-box min-w-max tabs-lift flex justify-center">
-              <input
-                type="radio"
-                name="my_tabs_1"
-                className="tab"
-                aria-label="Questions"
-                onClick={() => setNavTabs("questions")}
-                defaultChecked
-              />
-              <input
-                type="radio"
-                name="my_tabs_1"
-                className="tab"
-                aria-label="Answers"
-                onClick={() => setNavTabs("answers")}
-              />
-              <input
-                type="radio"
-                name="my_tabs_1"
-                className="tab"
-                aria-label="Verified"
-                onClick={() => setNavTabs("verified")}
-              />
-              <input
-                type="radio"
-                name="my_tabs_1"
-                className="tab"
-                aria-label="Accepted"
-                onClick={() => setNavTabs("accepted")}
-              />
+              {roleTabs[userData?.role]?.map((tab, index) => (
+                <input
+                  key={index}
+                  type="radio"
+                  name="role_tabs"
+                  className="tab"
+                  aria-label={tab.label}
+                  defaultChecked={index === 0}
+                  onClick={() => setNavTabs(tab.key)}
+                />
+              ))}
             </div>
           </div>
 
-          <div className="max-h-max mb-18">
-            {navTabs === "questions" &&
-              (loading ? (
-                <div className="w-full max-h-[30vh] min-h-[10vh] flex justify-center items-center">
-                  <span className="loading loading-spinner text-neutral"></span>
-                </div>
-              ) : (
-                <div>
-                  {(() => {
-                    const userQuestions = questions.filter(
-                      (q) => q?.user?._id === userData?._id
-                    );
-                    return userQuestions.length === 0 ? (
-                      <EmptyStateMessage
-                        icon="❓"
-                        title="You haven't asked any questions yet"
-                        subtitle="Ask questions to get help from the community"
-                      />
-                    ) : (
-                      userQuestions.map((q, index) => (
-                        <Question q={q} key={index} />
-                      ))
-                    );
-                  })()}
-                </div>
-              ))}
-
-            {navTabs === "answers" &&
-              (loading ? (
-                <div className="w-full max-h-[30vh] min-h-[10vh] flex justify-center items-center">
-                  <span className="loading loading-spinner text-neutral"></span>
-                </div>
-              ) : (
-                <div>
-                  {(() => {
-                    const userAnsweredQuestions = questions.filter((q) =>
-                      q.answers?.some(
-                        (a) =>
-                          a.user === userData?._id ||
-                          a?.user?._id === userData?._id
-                      )
-                    );
-
-                    return userAnsweredQuestions.length === 0 ? (
-                      <EmptyStateMessage
-                        icon="💬"
-                        title="You haven't answered any questions yet"
-                        subtitle="Share your knowledge by answering questions"
-                      />
-                    ) : (
-                      userAnsweredQuestions.map((q, index) => (
-                        <Question q={q} key={index} />
-                      ))
-                    );
-                  })()}
-                </div>
-              ))}
-          </div>
+          <div className="max-h-max mb-18">{renderTabContent()}</div>
         </div>
       )}
 

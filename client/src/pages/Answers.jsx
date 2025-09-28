@@ -71,6 +71,9 @@ function Answers() {
       );
       console.log(res);
       toast.success(res?.data?.message);
+      setAllAnswers((prev) =>
+        prev.map((a) => (a._id === ansId ? { ...a, gotAnswer: true } : a))
+      );
     } catch (error) {
       toast.error(error?.response?.data?.message || error?.message);
     }
@@ -224,14 +227,15 @@ function Answers() {
             </h2>
             <p className="cursor-default">{formatTimestamp(ans?.createdAt)}</p>
             {userData?._id === question?.user?._id &&
+              question?.user?.role === "student" &&
               !question?.stopAnswering && (
                 <details className="dropdown dropdown-end">
                   <summary className="btn m-1">
                     <MoreVertical />
                   </summary>
-                  <ul className="menu dropdown-content bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
+                  <ul className="menu dropdown-content bg-base-100 rounded-box z-1 w-52 p-2 shadow-lg">
                     <li>
-                      <a onClick={markAsIGotMyAnswer(ans?._id)}>Accept</a>
+                      <a onClick={() => markAsIGotMyAnswer(ans?._id)}>Accept</a>
                     </li>
                   </ul>
                 </details>

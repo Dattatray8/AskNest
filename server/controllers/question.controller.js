@@ -31,7 +31,7 @@ export const getQuestion = async (req, res) => {
   try {
     const { questionId } = req.params;
     const question = await Question.findById(questionId)
-      .populate("user", "userName profileImage")
+      .populate("user", "userName profileImage role")
       .populate("answers answers.user");
     if (!question) {
       return res.status(404).json({ message: "Question not found" });
@@ -76,7 +76,7 @@ export const iGotMyAnswer = async (req, res) => {
     }
     let answer = await Answer.findById(answerId).populate("user");
     if (!answer) {
-      return res.status(404).json({ message: "Question not found" });
+      return res.status(404).json({ message: "Answer not found" });
     }
     const user = await User.findById(req.userId);
     if (user?._id.equals(question?.user?._id)) {
@@ -89,7 +89,11 @@ export const iGotMyAnswer = async (req, res) => {
     }
     return res
       .status(200)
-      .json({ success: true, message: "Stopped talking answers" });
+      .json({
+        success: true,
+        message: "Stopped talking answers",
+        updatedAnswer: answer
+      });
   } catch (error) {
     return res
       .status(500)
