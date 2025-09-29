@@ -83,16 +83,18 @@ function Profile() {
       );
     }
 
+    const viewedUserId = profileData?._id;
+
     switch (navTabs) {
       case "questions": {
         const userQuestions = questions.filter(
-          (q) => q?.user?._id === userData?._id
+          (q) => q?.user?._id === viewedUserId
         );
         return userQuestions.length === 0 ? (
           <EmptyStateMessage
             icon="❓"
-            title="You haven't asked any questions yet"
-            subtitle="Ask questions to get help from the community"
+            title="No questions yet"
+            subtitle="This user hasn't asked any questions"
           />
         ) : (
           userQuestions.map((q, index) => <Question q={q} key={index} />)
@@ -102,14 +104,14 @@ function Profile() {
       case "answers": {
         const userAnsweredQuestions = questions.filter((q) =>
           q.answers?.some(
-            (a) => a.user === userData?._id || a?.user?._id === userData?._id
+            (a) => a.user === viewedUserId || a?.user?._id === viewedUserId
           )
         );
         return userAnsweredQuestions.length === 0 ? (
           <EmptyStateMessage
             icon="💬"
-            title="You haven't answered any questions yet"
-            subtitle="Share your knowledge by answering questions"
+            title="No answers yet"
+            subtitle="This user hasn't answered any questions"
           />
         ) : (
           userAnsweredQuestions.map((q, index) => (
@@ -122,7 +124,7 @@ function Profile() {
         const userAcceptedAnswers = questions.filter((q) =>
           q.answers?.some(
             (a) =>
-              (a.user === userData?._id || a?.user?._id === userData?._id) &&
+              (a.user === viewedUserId || a?.user?._id === viewedUserId) &&
               a.gotAnswer === true
           )
         );
@@ -130,7 +132,7 @@ function Profile() {
           <EmptyStateMessage
             icon="🏆"
             title="No accepted answers yet"
-            subtitle="When your answer gets accepted, it will show up here"
+            subtitle="Accepted answers will show up here"
           />
         ) : (
           userAcceptedAnswers.map((q, index) => <Question q={q} key={index} />)

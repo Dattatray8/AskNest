@@ -25,7 +25,11 @@ function Search() {
         )}`,
         { withCredentials: true }
       );
-      setResults(data?.users?.filter((user) => user?.userName !== "AI") || []);
+      setResults(
+        data?.users?.filter(
+          (user) => user?.userName !== "AI" && user?.userName !== "Admin"
+        ) || []
+      );
     } catch (err) {
       setError("Search failed. Please try again.");
       setResults([]);

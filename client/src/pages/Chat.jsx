@@ -157,10 +157,20 @@ function Chat() {
               />
             </svg>
           </button>
-          <button className="btn btn-circle btn-lg">
+          <button
+            className="btn btn-circle btn-lg"
+            onClick={() => {
+              toast("🚧 Feature under development!");
+            }}
+          >
             <Video />
           </button>
-          <button className="btn btn-circle btn-lg">
+          <button
+            className="btn btn-circle btn-lg"
+            onClick={() => {
+              toast("🚧 Feature under development!");
+            }}
+          >
             <svg
               aria-label="New gallery photo"
               xmlns="http://www.w3.org/2000/svg"

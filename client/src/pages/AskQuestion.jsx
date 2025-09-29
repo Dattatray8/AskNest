@@ -67,7 +67,10 @@ function AskQuestion() {
             <a
               className="tooltip"
               data-tip="Mic"
-              onClick={() => recognition.start()}
+              // onClick={() => recognition.start()}
+              onClick={() => {
+                toast("🚧 Feature under development!");
+              }}
             >
               <svg
                 aria-label="New voice"
@@ -82,7 +85,13 @@ function AskQuestion() {
             </a>
           </li>
           <li>
-            <a className="tooltip" data-tip="Media">
+            <a
+              className="tooltip"
+              data-tip="Media"
+              onClick={() => {
+                toast("🚧 Feature under development!");
+              }}
+            >
               <svg
                 aria-label="New gallery photo"
                 xmlns="http://www.w3.org/2000/svg"

@@ -157,7 +157,10 @@ function Answers() {
                 <a
                   className="tooltip"
                   data-tip="Mic"
-                  onClick={() => recognition.start()}
+                  // onClick={() => recognition.start()}
+                  onClick={() => {
+                    toast("🚧 Feature under development!");
+                  }}
                 >
                   <svg
                     aria-label="New voice"
@@ -172,7 +175,13 @@ function Answers() {
                 </a>
               </li>
               <li>
-                <a className="tooltip" data-tip="Media">
+                <a
+                  className="tooltip"
+                  data-tip="Media"
+                  onClick={() => {
+                    toast("🚧 Feature under development!");
+                  }}
+                >
                   <svg
                     aria-label="New gallery photo"
                     xmlns="http://www.w3.org/2000/svg"
@@ -230,7 +239,7 @@ function Answers() {
               question?.user?.role === "student" &&
               !question?.stopAnswering && (
                 <details className="dropdown dropdown-end">
-                  <summary className="btn m-1">
+                  <summary className="btn m-1 p-0 btn-circle">
                     <MoreVertical />
                   </summary>
                   <ul className="menu dropdown-content bg-base-100 rounded-box z-1 w-52 p-2 shadow-lg">
