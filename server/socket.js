@@ -8,7 +8,7 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: "https://querysphere-7t20.onrender.com/",
+    origin: "https://query-sphere.onrender.com",
     methods: ["GET", "POST"],
   },
 });
