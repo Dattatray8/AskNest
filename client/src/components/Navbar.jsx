@@ -4,7 +4,7 @@ import { setUserData } from "../redux/userSlice";
 import { serverUrl } from "../App";
 import axios from "axios";
 import user from "../assets/user.png";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import SocketContext from "../context/SocketContext";
 
 function Navbar() {

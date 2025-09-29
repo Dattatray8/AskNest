@@ -30,7 +30,7 @@ function Search() {
           (user) => user?.userName !== "AI" && user?.userName !== "Admin"
         ) || []
       );
-    } catch (err) {
+    } catch {
       setError("Search failed. Please try again.");
       setResults([]);
     } finally {
