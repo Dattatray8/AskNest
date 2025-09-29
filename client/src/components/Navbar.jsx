@@ -27,7 +27,7 @@ function Navbar() {
     <div>
       <div className="navbar bg-base-100 shadow-sm absolute">
         <div className="flex-1">
-          <a className="btn btn-ghost text-xl">Doubtly</a>
+          <a className="px-4 font-semibold cursor-pointer text-xl">QuerySphere</a>
         </div>
         <div className="flex gap-4">
           <div>
