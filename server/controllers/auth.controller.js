@@ -24,8 +24,8 @@ export const signup = async (req, res) => {
     const token = await generateToken(user?._id);
     res.cookie("token", token, {
       httpOnly: true,
-      secure: false,
-      sameSite: "Strict",
+      secure: true,
+      sameSite: "none",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
     const { password: _, ...safeUser } = user.toObject();
@@ -65,8 +65,8 @@ export const login = async (req, res) => {
     const token = await generateToken(user?._id);
     res.cookie("token", token, {
       httpOnly: true,
-      secure: false,
-      sameSite: "Strict",
+      secure: true,
+      sameSite: "none",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
     const { password: _, ...safeUser } = user.toObject();
@@ -84,8 +84,8 @@ export const logout = async (_, res) => {
   try {
     res.clearCookie("token",{
       httpOnly: true,
-      secure: false,
-      sameSite: "Strict",
+      secure: true,
+      sameSite: "none",
     });
     return res
       .status(200)
