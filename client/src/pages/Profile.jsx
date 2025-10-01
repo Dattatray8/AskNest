@@ -1,4 +1,4 @@
-import { ChevronLeft, UserPen } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import BottomBar from "../components/BottomBar";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -7,9 +7,11 @@ import axios from "axios";
 import { serverUrl } from "../App";
 import { useEffect, useState } from "react";
 import user from "../assets/user.png";
-import useQuestions from "../hooks/useQuestions";
-import Question from "../components/Question";
-import EmptyStateMessage from "../components/EmptyStateMessage";
+import { roleTabs } from "../config/roleTabs";
+import ProfileHeader from "../components/profile/ProfileHeader";
+import ProfileBio from "../components/profile/ProfileBio";
+import ProfileTabs from "../components/profile/ProfileTabs";
+import ProfileSkeleton from "../components/profile/ProfileSkeleton";
 
 function Profile() {
   const { userName } = useParams();
@@ -17,9 +19,6 @@ function Profile() {
   const dispatch = useDispatch();
   const navigation = useNavigate();
   const [load, setLoading] = useState(false);
-  const [navTabs, setNavTabs] = useState("questions");
-  const { loading } = useQuestions();
-  const { questions } = useSelector((state) => state.question);
 
   const handleProfile = async () => {
     try {
@@ -30,7 +29,6 @@ function Profile() {
       );
       dispatch(setProfileData(res?.data?.user));
     } catch (error) {
-      setLoading(false);
       console.log(error);
     } finally {
       setLoading(false);
@@ -53,170 +51,41 @@ function Profile() {
     }
   };
 
-  const roleTabs = {
-    student: [
-      { label: "My Questions", key: "questions" },
-      { label: "My Answers", key: "answers" },
-      { label: "Accepted Answers", key: "accepted" },
-      { label: "Verified Answers", key: "verified" },
-    ],
-    teacher: [
-      { label: "Spam Reports", key: "spamReports" },
-      { label: "Spam Questions", key: "spamQuestions" },
-      { label: "Spam Answers", key: "spamAnswers" },
-      { label: "Verified Answers", key: "verified" },
-    ],
-    admin: [
-      { label: "Reported Questions", key: "reportedQuestions" },
-      { label: "Reported Answers", key: "reportedAnswers" },
-      { label: "Reported Messages", key: "reportedMessages" },
-      { label: "Teacher Applications", key: "teacherApplications" },
-    ],
-  };
-
-  const renderTabContent = () => {
-    if (loading) {
-      return (
-        <div className="w-full max-h-[30vh] min-h-[10vh] flex justify-center items-center">
-          <span className="loading loading-spinner text-neutral"></span>
-        </div>
-      );
-    }
-
-    const viewedUserId = profileData?._id;
-
-    switch (navTabs) {
-      case "questions": {
-        const userQuestions = questions.filter(
-          (q) => q?.user?._id === viewedUserId
-        );
-        return userQuestions.length === 0 ? (
-          <EmptyStateMessage
-            icon="❓"
-            title="No questions yet"
-            subtitle="This user hasn't asked any questions"
-          />
-        ) : (
-          userQuestions.map((q, index) => <Question q={q} key={index} />)
-        );
-      }
-
-      case "answers": {
-        const userAnsweredQuestions = questions.filter((q) =>
-          q.answers?.some(
-            (a) => a.user === viewedUserId || a?.user?._id === viewedUserId
-          )
-        );
-        return userAnsweredQuestions.length === 0 ? (
-          <EmptyStateMessage
-            icon="💬"
-            title="No answers yet"
-            subtitle="This user hasn't answered any questions"
-          />
-        ) : (
-          userAnsweredQuestions.map((q, index) => (
-            <Question q={q} key={index} />
-          ))
-        );
-      }
-
-      case "accepted": {
-        const userAcceptedAnswers = questions.filter((q) =>
-          q.answers?.some(
-            (a) =>
-              (a.user === viewedUserId || a?.user?._id === viewedUserId) &&
-              a.gotAnswer === true
-          )
-        );
-        return userAcceptedAnswers.length === 0 ? (
-          <EmptyStateMessage
-            icon="🏆"
-            title="No accepted answers yet"
-            subtitle="Accepted answers will show up here"
-          />
-        ) : (
-          userAcceptedAnswers.map((q, index) => <Question q={q} key={index} />)
-        );
-      }
-
-      default:
-        return <div>No data</div>;
-    }
-  };
-
   return (
-    <div className="w-full h-full">
+    <div className="w-full h-full pb-20">
+      {/* Top Bar */}
       <div className="h-16 shadow-md flex items-center sm:px-4 px-2 justify-between">
         <ChevronLeft
           size={28}
           className="cursor-pointer"
           onClick={() => navigation(-1)}
         />
-        <p>{profileData?.userName}</p>
-        <button className="btn" onClick={handleLogOut}>
+        <p className="font-semibold">{profileData?.userName}</p>
+        <button className="btn btn-sm" onClick={handleLogOut}>
           Logout
         </button>
       </div>
 
       {load ? (
-        <div className="sm:w-1/2 w-full px-8 sm:px-0 m-auto justify-start py-8 flex flex-col gap-8">
-          <div className="flex flex-col gap-8 w-full">
-            <div className="flex items-center gap-12 justify-center">
-              <div className="skeleton h-24 w-24 shrink-0 rounded-full"></div>
-              <div className="flex flex-col gap-4">
-                <div className="skeleton h-4 w-20 m-auto"></div>
-                <div className="skeleton h-4 w-28 m-auto"></div>
-              </div>
-            </div>
-          </div>
-          <div className="skeleton h-32 w-full"></div>
-        </div>
+        <ProfileSkeleton />
       ) : (
-        <div className="sm:w-1/2 w-full px-8 sm:px-0 m-auto py-8 flex flex-col gap-4">
-          <div className="flex gap-10 justify-center relative">
-            <div className="avatar">
-              <div className="w-24 rounded-full shadow-md">
-                <img src={profileData?.profileImage || user} />
-              </div>
-            </div>
-            <div className="flex flex-col gap-2 items-center justify-center">
-              <div>{profileData?.userName}</div>
-              {profileData?.profession && (
-                <div className="badge badge-soft badge-primary">
-                  {profileData?.profession}
-                </div>
-              )}
-            </div>
-            {userData?._id === profileData?._id && (
-              <UserPen
-                className="absolute top-0 right-0 cursor-pointer"
-                onClick={() => navigation("/editprofile")}
-              />
-            )}
-          </div>
-          {profileData?.bio && (
-            <div className="sm:p-4 max-h-[100px] overflow-y-auto">
-              {profileData?.bio}
-            </div>
-          )}
+        <div className="sm:w-full max-w-5xl w-full px-6 sm:px-8 m-auto py-8 flex flex-col gap-6">
+          <ProfileHeader
+            profileData={profileData}
+            userData={userData}
+            user={user}
+            onEdit={() => navigation("/editprofile")}
+          />
 
-          <div className="overflow-x-auto">
-            <div className="tabs tabs-box min-w-max tabs-lift flex justify-center">
-              {roleTabs[userData?.role]?.map((tab, index) => (
-                <input
-                  key={index}
-                  type="radio"
-                  name="role_tabs"
-                  className="tab"
-                  aria-label={tab.label}
-                  defaultChecked={index === 0}
-                  onClick={() => setNavTabs(tab.key)}
-                />
-              ))}
-            </div>
-          </div>
+          {profileData?.bio && <ProfileBio bio={profileData?.bio} />}
 
-          <div className="max-h-max mb-18">{renderTabContent()}</div>
+          <div className="divider my-2">Activities</div>
+
+          <ProfileTabs
+            role={userData?.role}
+            userName={userName}
+            roleTabs={roleTabs}
+          />
         </div>
       )}
 
