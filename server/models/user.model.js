@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const userShema = new mongoose.Schema(
+const userSchema = new mongoose.Schema(
   {
     role: {
       type: String,
@@ -60,9 +60,17 @@ const userShema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    isAppliedForTeacherRole: {
+      type: Boolean,
+      default: false,
+    },
+    isTeacher: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );
 
-const User = mongoose.model("User", userShema);
+const User = mongoose.model("User", userSchema);
 export default User;

@@ -85,15 +85,64 @@ export const search = async (req, res) => {
     }
     const users = await User.find({
       _id: { $ne: req.userId },
-      $or: [
-        { userName: { $regex: keyword, $options: "i" } },
-      ],
+      $or: [{ userName: { $regex: keyword, $options: "i" } }],
     }).select("-password");
 
     return res.status(200).json({ users });
   } catch (error) {
     return res.status(500).json({
       message: "Error in to search user",
+      error: error.message,
+    });
+  }
+};
+
+export const applyForTeacherRole = async (req, res) => {
+  try {
+    const user = await User.findById(req.userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    if (user.isTeacher) {
+      return res.status(400).json({ message: "You are already a teacher" });
+    }
+    if (user.isAppliedForTeacherRole) {
+      return res
+        .status(400)
+        .json({ message: "Already applied for teacher role" });
+    }
+    user.isAppliedForTeacherRole = true;
+    await user.save();
+    return res
+      .status(200)
+      .json({ message: "Successfully applied for teacher role" });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Error applying for teacher role",
+      error: error.message,
+    });
+  }
+};
+
+export const removeApplicationForTeacherRole = async (req, res) => {
+  try {
+    const user = await User.findById(req.userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    if (!user.isAppliedForTeacherRole) {
+      return res
+        .status(400)
+        .json({ message: "You have not applied for teacher role" });
+    }
+    user.isAppliedForTeacherRole = false;
+    await user.save();
+    return res
+      .status(200)
+      .json({ message: "Successfully removed application for teacher role" });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Error in removing application for teacher role",
       error: error.message,
     });
   }
