@@ -4,21 +4,21 @@ import { serverUrl } from "../App";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { setLoading } from "../redux/questionSlice";
-import { setQuestionsAnswered } from "../redux/studentSlice";
+import { setQuestionsAccepted } from "../redux/studentSlice";
 
-function useAnsweredQuestions(studentId) {
+function useAnswerAcceptedQuestions(studentId) {
   const dispatch = useDispatch();
   useEffect(() => {
-    const getAnsweredQuestions = async () => {
+    const getAcceptedAnswers = async () => {
       try {
         dispatch(setLoading(true));
         const result = await axios.get(
-          `${serverUrl}/api/v1/student/answered/${studentId}`,
+          `${serverUrl}/api/v1/student/answered/accepted/${studentId}`,
           {
             withCredentials: true,
           }
         );
-        dispatch(setQuestionsAnswered(result?.data?.answeredQuestion));
+        dispatch(setQuestionsAccepted(result?.data?.answerAcceptedQuestion));
       } catch (error) {
         dispatch(setLoading(false));
         toast.error(error?.response?.data?.message || error?.message);
@@ -26,8 +26,8 @@ function useAnsweredQuestions(studentId) {
         dispatch(setLoading(false));
       }
     };
-    getAnsweredQuestions();
+    getAcceptedAnswers();
   }, [studentId]);
 }
 
-export default useAnsweredQuestions;
+export default useAnswerAcceptedQuestions;

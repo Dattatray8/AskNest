@@ -4,14 +4,18 @@ const questionSlice = createSlice({
   name: "question",
   initialState: {
     questions: [],
+    loading: false,
   },
   reducers: {
     setQuestions: (state, action) => {
       state.questions = action.payload;
     },
+    setLoading: (state, action) => {
+      state.loading = action.payload;
+    },
   },
 });
 
-export const { setQuestions } = questionSlice.actions;
+export const { setQuestions, setLoading } = questionSlice.actions;
 
 export default questionSlice.reducer;

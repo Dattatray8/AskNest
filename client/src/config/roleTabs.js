@@ -1,7 +1,7 @@
 export const roleTabs = {
   student: [
-    { label: "My Questions", key: "questions" },
-    { label: "My Answers", key: "s_answers" },
+    { label: "Questions", key: "questions" },
+    { label: "Answers", key: "s_answers" },
     { label: "Accepted Answers", key: "accepted" },
     { label: "Verified Answers", key: "t_verified" },
   ],
