@@ -47,7 +47,7 @@ function Profile() {
       dispatch(setUserData(null));
       navigation("/");
     } catch (error) {
-      console.log(error);
+      toast.error(error?.response?.data?.message || error?.message);
     }
   };
 
@@ -82,9 +82,9 @@ function Profile() {
           <div className="divider my-2">Activities</div>
 
           <ProfileTabs
-            role={userData?.role}
-            userName={userName}
+            role={profileData?.role}
             roleTabs={roleTabs}
+            userId={profileData?._id}
           />
         </div>
       )}

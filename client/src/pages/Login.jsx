@@ -48,7 +48,7 @@ function Login() {
       <div className="card w-96 bg-base-100 shadow-md">
         <div className="card-body">
           <div className="text-center text-2xl font-semibold mb-4">
-            Login to AskNest
+            Login to QuerySphere
           </div>
           <div className="text-center mb-2">
             <label className="input validator">

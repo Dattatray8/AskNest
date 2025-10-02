@@ -1,15 +1,14 @@
 export const roleTabs = {
   student: [
     { label: "My Questions", key: "questions" },
-    { label: "My Answers", key: "answers" },
+    { label: "My Answers", key: "s_answers" },
     { label: "Accepted Answers", key: "accepted" },
-    { label: "Verified Answers", key: "verified" },
+    { label: "Verified Answers", key: "t_verified" },
   ],
   teacher: [
-    { label: "Answers", key: "answers" },
+    { label: "Answers", key: "t_answers" },
     { label: "Unanswered Questions", key: "unansweredQuestions" },
     { label: "Spam Users", key: "spamUsers" },
-    { label: "Verified Answers", key: "verified" },
   ],
   admin: [
     { label: "Reported Questions", key: "reportedQuestions" },

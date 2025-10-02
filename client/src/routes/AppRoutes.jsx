@@ -10,6 +10,7 @@ import Feed from "../pages/Feed";
 import AskQuestion from "../pages/AskQuestion";
 import Answers from "../pages/Answers";
 import Search from "../pages/Search";
+import ProfileTabPage from "../pages/ProfileTabPage";
 
 function AppRoutes() {
   useCurrentUser();
@@ -25,6 +26,7 @@ function AppRoutes() {
       <Route path="/ask" element={<AskQuestion />} />
       <Route path="/question/:qId" element={<Answers />} />
       <Route path="/search" element={<Search />} />
+      <Route path="/profile/:userId/:tabKey" element={<ProfileTabPage />} />
     </Routes>
   );
 }

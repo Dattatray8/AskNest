@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import getTabIcon from "../../utils/getTabIcon";
 
-function ProfileTabs({ role, userName, roleTabs }) {
+function ProfileTabs({ role, roleTabs, userId }) {
   const navigate = useNavigate();
 
   const getGridColumns = () => {
@@ -17,7 +17,7 @@ function ProfileTabs({ role, userName, roleTabs }) {
       {roleTabs[role]?.map((tab, index) => (
         <button
           key={index}
-          onClick={() => navigate(`/profile/${userName}/${tab.key}`)}
+          onClick={() => navigate(`/profile/${userId}/${tab.key}`)}
           className="btn btn-outline hover:btn-primary hover:scale-105 transition-all duration-200 flex flex-col gap-2 h-auto py-4 px-3 group"
         >
           <div className="flex items-center justify-center text-primary group-hover:text-primary-content transition-colors">

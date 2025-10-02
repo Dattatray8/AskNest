@@ -9,6 +9,7 @@ import messageRouter from "./routes/message.routes.js";
 import { app, server } from "./socket.js";
 import questionRouter from "./routes/question.routes.js";
 import answerRouter from "./routes/answer.routes.js";
+import studentRouter from "./routes/student.routes.js";
 
 dotenv.config();
 
@@ -26,6 +27,7 @@ app.use("/api/v1/users", userRouter);
 app.use("/api/v1/chat", messageRouter);
 app.use("/api/v1/questions", questionRouter);
 app.use("/api/v1/answers", answerRouter);
+app.use("/api/v1/student", studentRouter);
 
 server.listen(process.env.PORT, () => {
   dbConnection();

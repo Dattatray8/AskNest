@@ -1,8 +1,14 @@
-import Question from "../models/question.model";
+import Answer from "../models/answer.model.js";
+import Question from "../models/question.model.js";
 
 export const askedQuestions = async (req, res) => {
   try {
     const { studentId } = req.params;
+    if (!studentId) {
+      return res
+        .status(400)
+        .json({ success: false, message: "studentId required" });
+    }
     const questions = await Question.find({ user: studentId })
       .populate("user", "userName profileImage")
       .sort({ createdAt: -1 });
@@ -14,6 +20,37 @@ export const askedQuestions = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Failed to fetch questions",
+      error: error.message,
+    });
+  }
+};
+
+export const answeredQuestions = async (req, res) => {
+  try {
+    const { studentId } = req.params;
+    if (!studentId) {
+      return res
+        .status(400)
+        .json({ success: false, message: "studentId required" });
+    }
+    const answers = await Answer.find({ user: studentId })
+      .populate("user", "userName profileImage")
+      .populate("question")
+      .sort({ createdAt: -1 });
+    const answeredQuestion = [];
+    answers.map((answer) => {
+      if (answer.question && !answeredQuestion.includes(answer.question)) {
+        answeredQuestion.push(answer.question);
+      }
+    });
+    return res.status(200).json({
+      success: true,
+      answeredQuestion,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch answers",
       error: error.message,
     });
   }
