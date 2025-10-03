@@ -3,6 +3,7 @@ import userSlice from "./userSlice";
 import chatSlice from "./chatSlice";
 import questionSlice from "./questionSlice";
 import studentSlice from "./studentSlice";
+import adminSlice from "./adminSlice";
 
 export const store = configureStore({
   reducer: {
@@ -10,5 +11,6 @@ export const store = configureStore({
     chat: chatSlice,
     question: questionSlice,
     student: studentSlice,
+    admin: adminSlice,
   },
 });

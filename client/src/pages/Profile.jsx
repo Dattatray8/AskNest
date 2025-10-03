@@ -12,6 +12,7 @@ import ProfileHeader from "../components/profile/ProfileHeader";
 import ProfileBio from "../components/profile/ProfileBio";
 import ProfileTabs from "../components/profile/ProfileTabs";
 import ProfileSkeleton from "../components/profile/ProfileSkeleton";
+import toast from "react-hot-toast";
 
 function Profile() {
   const { userName } = useParams();
@@ -30,6 +31,7 @@ function Profile() {
       dispatch(setProfileData(res?.data?.user));
     } catch (error) {
       console.log(error);
+      toast.error(error?.response?.data?.message || error?.message);
     } finally {
       setLoading(false);
     }
@@ -46,6 +48,36 @@ function Profile() {
       });
       dispatch(setUserData(null));
       navigation("/");
+    } catch (error) {
+      toast.error(error?.response?.data?.message || error?.message);
+    }
+  };
+
+  const applyForTeacherRole = async () => {
+    try {
+      const result = await axios.post(
+        `${serverUrl}/api/v1/users/applyTeacherRole`,
+        {},
+        { withCredentials: true }
+      );
+      console.log(result);
+      toast.success(result?.data?.message);
+      dispatch(setUserData(result?.data?.user));
+    } catch (error) {
+      toast.error(error?.response?.data?.message || error?.message);
+    }
+  };
+
+  const cancelApplicationForTeacherRole = async () => {
+    try {
+      const result = await axios.post(
+        `${serverUrl}/api/v1/users/removeTeacherApplication`,
+        {},
+        { withCredentials: true }
+      );
+      toast.success(result?.data?.message);
+      console.log(result);
+      dispatch(setUserData(result?.data?.user));
     } catch (error) {
       toast.error(error?.response?.data?.message || error?.message);
     }
@@ -78,6 +110,36 @@ function Profile() {
           />
 
           {profileData?.bio && <ProfileBio bio={profileData?.bio} />}
+
+          {userData?.role === "teacher" &&
+            !userData?.isAppliedForTeacherRole &&
+            !userData?.isTeacher && (
+              <button
+                className="btn btn-primary btn-wide max-w-sm self-center w-full"
+                onClick={applyForTeacherRole}
+              >
+                Apply For Teacher Role
+              </button>
+            )}
+
+          {userData?.role === "teacher" &&
+            !userData?.isAppliedForTeacherRole &&
+            userData?.isTeacher && (
+              <p className="badge badge-dash badge-success self-center">
+                You are a Teacher Now
+              </p>
+            )}
+
+          {userData?.role === "teacher" &&
+            userData?.isAppliedForTeacherRole &&
+            !userData?.isTeacher && (
+              <button
+                className="btn btn-warning btn-wide max-w-sm self-center w-full"
+                onClick={cancelApplicationForTeacherRole}
+              >
+                Cancel Teacher Role Application
+              </button>
+            )}
 
           <div className="divider my-2">Activities</div>
 

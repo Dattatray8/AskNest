@@ -115,7 +115,7 @@ export const applyForTeacherRole = async (req, res) => {
     await user.save();
     return res
       .status(200)
-      .json({ message: "Successfully applied for teacher role" });
+      .json({ message: "Successfully applied for teacher role", user });
   } catch (error) {
     return res.status(500).json({
       message: "Error applying for teacher role",
@@ -137,9 +137,10 @@ export const removeApplicationForTeacherRole = async (req, res) => {
     }
     user.isAppliedForTeacherRole = false;
     await user.save();
-    return res
-      .status(200)
-      .json({ message: "Successfully removed application for teacher role" });
+    return res.status(200).json({
+      message: "Successfully removed application for teacher role",
+      user,
+    });
   } catch (error) {
     return res.status(500).json({
       message: "Error in removing application for teacher role",

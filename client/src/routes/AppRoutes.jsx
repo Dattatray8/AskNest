@@ -11,6 +11,8 @@ import AskQuestion from "../pages/AskQuestion";
 import Answers from "../pages/Answers";
 import Search from "../pages/Search";
 import ProfileTabPage from "../pages/ProfileTabPage";
+import TeacherApplications from "../pages/TeacherApplications";
+import AllUsers from "../pages/AllUsers";
 
 function AppRoutes() {
   useCurrentUser();
@@ -27,6 +29,8 @@ function AppRoutes() {
       <Route path="/question/:qId" element={<Answers />} />
       <Route path="/search" element={<Search />} />
       <Route path="/profile/:userId/:tabKey" element={<ProfileTabPage />} />
+      <Route path="/users/:tabKey" element={<TeacherApplications />} />
+      <Route path="/:tabKey" element={<AllUsers />} />
     </Routes>
   );
 }
