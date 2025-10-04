@@ -1,13 +1,11 @@
-import { useContext, useState } from "react";
-import Spline from "@splinetool/react-spline";
 import Navbar from "../components/Navbar";
 import BottomBar from "../components/BottomBar";
-import SocketContext from "../context/SocketContext";
+import useCurrentUser from "../hooks/useCurrentUser";
+import Hero from "../components/Hero";
+import Footer from "../components/Footer";
 
 function Home() {
-  const [loading, setLoading] = useState(true);
-  const { theme } = useContext(SocketContext);
-
+  const { loading } = useCurrentUser();
   return (
     <div className="relative">
       <Navbar />
@@ -25,7 +23,7 @@ function Home() {
               <div className="skeleton w-8 h-8 rounded-full"></div>
             </div>
           </div>
-          <div className="dock dock-md sm:w-1/2 m-auto h-18">
+          <div className="dock dock-md sm:hidden m-auto h-18">
             {[...Array(5)].map((_, i) => (
               <div
                 key={i}
@@ -38,15 +36,9 @@ function Home() {
           </div>
         </div>
       )}
-
-      <Spline
-        scene="https://prod.spline.design/WXS2Z5qsrgWEAqOj/scene.splinecode"
-        style={{ height: "100vh" }}
-        onLoad={() => setLoading(false)}
-      />
-      <div className="fixed w-full h-18 bottom-0 right-0" data-theme={theme}>
-        <BottomBar tabName={"Home"} />
-      </div>
+      <Hero />
+      <Footer />
+      <BottomBar tabName={"Home"} />
     </div>
   );
 }

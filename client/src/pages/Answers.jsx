@@ -122,7 +122,7 @@ function Answers() {
 
       {userData?._id !== question?.user?._id && !question?.stopAnswering && (
         <div
-          className={`w-full p-4 absolute bottom-0 ${
+          className={`w-full p-4 fixed bottom-0 ${
             answerTabOpen ? "hidden" : "block"
           }`}
         >
@@ -133,7 +133,7 @@ function Answers() {
       )}
 
       {answerTabOpen && (
-        <div className="w-full p-4 sm:p-8 h-[80vh] z-[100] fixed bottom-0 right-0 rounded-md">
+        <div className="w-full p-4 sm:p-8 h-[80vh] z-[100] fixed bottom-0 right-0 rounded-md overflow-y-auto">
           <div className="flex px-2 justify-between">
             <button
               className="btn btn-circle"
@@ -208,7 +208,7 @@ function Answers() {
 
       {allAnswers?.map((ans, index) => (
         <div
-          className={`card-body w-full ${
+          className={`card-body mb-10 w-full ${
             answerTabOpen ? "opacity-10" : "opacity-100"
           }`}
           key={index}

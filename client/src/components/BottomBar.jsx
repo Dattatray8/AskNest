@@ -5,7 +5,7 @@ function BottomBar({ tabName }) {
   const { userData } = useSelector((state) => state.user);
   const navigation = useNavigate();
   return (
-    <div className="dock dock-md sm:w-1/2 m-auto h-18">
+    <div className="dock dock-md sm:hidden m-auto h-18">
       <button
         className={tabName === "Home" ? "dock-active" : ""}
         onClick={() => navigation("/")}

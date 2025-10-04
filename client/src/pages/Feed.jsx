@@ -4,6 +4,7 @@ import useQuestions from "../hooks/useQuestions";
 import { useSelector } from "react-redux";
 import EmptyQuestionMessage from "../components/EmptyQuestionMessage";
 import Question from "../components/Question";
+import { ChevronLeft } from "lucide-react";
 
 function Feed() {
   const navigation = useNavigate();
@@ -12,8 +13,16 @@ function Feed() {
 
   return (
     <div className="w-full h-full">
+      <div className="h-16 sm:flex items-center sm:px-4 px-2 gap-4 hidden">
+        <ChevronLeft
+          size={28}
+          className="cursor-pointer"
+          onClick={() => navigation(-1)}
+        />
+        <p className="card-title">Feed</p>
+      </div>
       <div
-        className="btn btn-circle absolute bottom-20 right-4"
+        className="btn btn-circle fixed bottom-20 right-4"
         onClick={() => navigation("/ask")}
       >
         <svg
@@ -40,7 +49,7 @@ function Feed() {
       ) : questions.length === 0 ? (
         <EmptyQuestionMessage />
       ) : (
-        <div className="w-full h-[calc(100vh_-_72px)] overflow-y-auto">
+        <div className="w-full mb-20 overflow-y-auto">
           {questions.map((q, index) => (
             <Question q={q} key={index} />
           ))}
