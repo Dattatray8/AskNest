@@ -104,7 +104,7 @@ function Chat() {
           <span className="loading loading-spinner text-neutral h-10 w-10"></span>
         </div>
       ) : (
-        <div className="my-20 overflow-y-auto w-full flex flex-col gap-3">
+        <div className="flex-1 px-2 mt-20 mb-20 overflow-y-auto w-full flex flex-col gap-3">
           {messages?.map((message, index) =>
             message?.sender?.userName !== "AI" ? (
               message?.sender?._id === userData?._id ? (

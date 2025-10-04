@@ -124,7 +124,7 @@ function AiResponse({ message }) {
   };
 
   return (
-    <div className="w-[95%] self-start sm:pl-4 pl-2 mb-4" ref={sender}>
+    <div className="w-[95%] self-start sm:pl-4 pl-2 mb-4">
       <div className="chat chat-start">
         <div className="chat-image avatar">
           <Bot />
@@ -153,7 +153,7 @@ function AiResponse({ message }) {
           </ReactMarkdown>
         </div>
 
-        <div className="chat-footer opacity-60 text-xs mt-1">
+        <div className="chat-footer opacity-60 text-xs mt-1" ref={sender}>
           {formatTimestamp(message?.createdAt)}
         </div>
       </div>
