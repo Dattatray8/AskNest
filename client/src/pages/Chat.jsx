@@ -87,8 +87,8 @@ function Chat() {
   }, [dispatch, socket]);
 
   return (
-    <div className="w-full h-[100vh] flex flex-col relative overflow-x-hidden">
-      <div className="h-20 shadow-md flex items-center fixed top-0 right-0 left-0 z-[100]">
+    <div className="w-full h-full flex flex-col relative overflow-x-hidden">
+      <div className="h-20 shadow-md flex items-center fixed top-0 right-0 left-0 z-[100] bg-base-100 backdrop-blur-sm border-t border-base-300">
         <ChevronLeft
           size={28}
           className="cursor-pointer mx-4"
@@ -104,7 +104,7 @@ function Chat() {
           <span className="loading loading-spinner text-neutral h-10 w-10"></span>
         </div>
       ) : (
-        <div className="flex-1 px-2 mt-20 mb-20 overflow-y-auto w-full flex flex-col gap-3">
+        <div className="my-20 overflow-y-auto z-1 w-full flex flex-col gap-3">
           {messages?.map((message, index) =>
             message?.sender?.userName !== "AI" ? (
               message?.sender?._id === userData?._id ? (
