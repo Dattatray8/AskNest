@@ -8,18 +8,17 @@ function Home() {
   const { loading } = useCurrentUser();
   return (
     <div className="relative">
-      <Navbar />
       {loading && (
-        <div className="absolute inset-0 bg-base-100 z-10">
+        <div className="fixed inset-0 bg-base-100 z-10">
           <div className="navbar bg-base-200 px-4">
             <div className="navbar-start">
-              <div className="skeleton w-10 h-10 rounded-full"></div>
+              <div className="skeleton w-20 h-6 ml-4"></div>
             </div>
-            <div className="navbar-center">
+            <div className="navbar-end gap-4">
+              <div className="skeleton w-20 h-6 hidden sm:block"></div>
+              <div className="skeleton w-20 h-6 hidden sm:block"></div>
+              <div className="skeleton w-20 h-6 hidden sm:block"></div>
               <div className="skeleton w-20 h-6"></div>
-            </div>
-            <div className="navbar-end">
-              <div className="skeleton w-8 h-8 rounded-full mr-2"></div>
               <div className="skeleton w-8 h-8 rounded-full"></div>
             </div>
           </div>
@@ -36,9 +35,14 @@ function Home() {
           </div>
         </div>
       )}
-      <Hero />
-      <Footer />
-      <BottomBar tabName={"Home"} />
+      {!loading && (
+        <div>
+          <Navbar />
+          <Hero />
+          <Footer />
+          <BottomBar tabName={"Home"} />
+        </div>
+      )}
     </div>
   );
 }
