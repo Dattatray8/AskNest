@@ -13,6 +13,7 @@ import Search from "../pages/Search";
 import ProfileTabPage from "../pages/ProfileTabPage";
 import TeacherApplications from "../pages/TeacherApplications";
 import AllUsers from "../pages/AllUsers";
+import FilteredQuestions from "../pages/FilteredQuestions";
 
 function AppRoutes() {
   useCurrentUser();
@@ -31,6 +32,7 @@ function AppRoutes() {
       <Route path="/profile/:userId/:tabKey" element={<ProfileTabPage />} />
       <Route path="/users/:tabKey" element={<TeacherApplications />} />
       <Route path="/:tabKey" element={<AllUsers />} />
+      <Route path="/questions/:tabKey" element={<FilteredQuestions />} />
     </Routes>
   );
 }

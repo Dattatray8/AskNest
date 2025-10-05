@@ -63,6 +63,19 @@ function AllUsers() {
     }
   };
 
+  const getFilteredUsers = async (filter) => {
+    try {
+      const res = await axios.post(
+        `${serverUrl}/api/v1/admin/users/${filter}`,
+        {},
+        { withCredentials: true }
+      );
+      dispatch(setAllUsers(res?.data?.users));
+    } catch (error) {
+      toast.error(error?.response?.data?.message || error?.message);
+    }
+  };
+
   return (
     <div className="w-full h-full">
       <div className="h-16 shadow-md flex items-center px-2 sm:px-4">
@@ -78,11 +91,15 @@ function AllUsers() {
         <label htmlFor="filter" className="label">
           Filter:
         </label>
-        <select defaultValue="Select" className="select w-40">
-          <option disabled={true}>Select</option>
-          <option>Banned</option>
-          <option>Teacher</option>
-          <option>Student</option>
+        <select
+          defaultValue={"all"}
+          className="select w-40"
+          onChange={(e) => getFilteredUsers(e.target.value)}
+        >
+          <option value="all">All</option>
+          <option value="banned">Banned</option>
+          <option value="teacher">Teacher</option>
+          <option value="student">Student</option>
         </select>
       </div>
 
@@ -110,7 +127,12 @@ function AllUsers() {
             <tbody>
               {allUsers.map((user, index) => (
                 <tr key={index}>
-                  <td>{user.userName}</td>
+                  <td
+                    onClick={() => navigation(`/profile/${user?.userName}`)}
+                    className="cursor-pointer"
+                  >
+                    {user.userName}
+                  </td>
                   <td>{user.isBanned ? "Yes" : "No"}</td>
                   <td>{user.spamMarkCount}</td>
                   <td>{user.role}</td>

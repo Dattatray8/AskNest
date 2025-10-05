@@ -87,16 +87,52 @@ export const iGotMyAnswer = async (req, res) => {
     } else {
       return res.status(403).json({ message: "You are not questions author." });
     }
-    return res
-      .status(200)
-      .json({
-        success: true,
-        message: "Stopped talking answers",
-        updatedAnswer: answer
-      });
+    return res.status(200).json({
+      success: true,
+      message: "Stopped talking answers",
+      updatedAnswer: answer,
+    });
   } catch (error) {
     return res
       .status(500)
       .json({ message: `Stop Answering Failed : ${error.message}` });
+  }
+};
+
+export const getCustomQuestions = async (req, res) => {
+  try {
+    const { questionType } = req.params;
+    if (!questionType)
+      return res.status(400).json({ message: "questionType is required" });
+
+    let filter = {};
+
+    switch (questionType) {
+      case "unanswered":
+        filter = { answers: { $size: 0 } };
+        break;
+      case "accepted":
+        filter = { stopAnswering: true };
+        break;
+      case "t_answers":
+        filter = {  }
+      default:
+        filter = {};
+    }
+    const questions = await Question.find(filter)
+      .populate("user", "userName profileImage")
+      .populate("answers")
+      .sort({ createdAt: -1 });
+
+    return res.status(200).json({
+      success: true,
+      message: "Questions Fetched Successfully",
+      questions,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Error fetching questions",
+      error: error.message,
+    });
   }
 };

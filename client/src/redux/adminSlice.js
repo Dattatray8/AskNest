@@ -5,6 +5,7 @@ const adminSlice = createSlice({
   initialState: {
     teacherApplications: [],
     allUsers: [],
+    teacherAnswers: [],
   },
   reducers: {
     setTeacherApplications: (state, action) => {
@@ -13,9 +14,13 @@ const adminSlice = createSlice({
     setAllUsers: (state, action) => {
       state.allUsers = action.payload;
     },
+    setTeacherAnswers: (state, action) => {
+      state.teacherAnswers = action.payload;
+    },
   },
 });
 
-export const { setTeacherApplications, setAllUsers } = adminSlice.actions;
+export const { setTeacherApplications, setAllUsers, setTeacherAnswers } =
+  adminSlice.actions;
 
 export default adminSlice.reducer;

@@ -22,7 +22,7 @@ function Feed() {
         <p className="card-title">Feed</p>
       </div>
       <div
-        className="btn btn-circle fixed bottom-20 right-4"
+        className="btn btn-circle fixed bottom-20 right-4 z-100"
         onClick={() => navigation("/ask")}
       >
         <svg
@@ -49,7 +49,7 @@ function Feed() {
       ) : questions.length === 0 ? (
         <EmptyQuestionMessage />
       ) : (
-        <div className="w-full mb-20 overflow-y-auto">
+        <div className="w-full mb-18 sm:mb-0 overflow-y-auto bg-base-300">
           {questions.map((q, index) => (
             <Question q={q} key={index} />
           ))}

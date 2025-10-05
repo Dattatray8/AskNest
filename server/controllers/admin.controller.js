@@ -1,11 +1,8 @@
+import Question from "../models/question.model.js";
 import User from "../models/user.model.js";
 
 export const approveTeacherApplication = async (req, res) => {
   try {
-    const isAdmin = await User.findById(req.userId);
-    if (!isAdmin || isAdmin.role !== "admin") {
-      return res.status(403).json({ message: "You are not Admin" });
-    }
     const { userId } = req.params;
     const user = await User.findById(userId);
     if (!user) {
@@ -27,10 +24,6 @@ export const approveTeacherApplication = async (req, res) => {
 
 export const disapproveTeacherApplication = async (req, res) => {
   try {
-    const isAdmin = await User.findById(req.userId);
-    if (!isAdmin || isAdmin.role !== "admin") {
-      return res.status(403).json({ message: "You are not Admin" });
-    }
     const { userId } = req.params;
     const user = await User.findById(userId);
     if (!user) {
@@ -52,10 +45,6 @@ export const disapproveTeacherApplication = async (req, res) => {
 
 export const getAllTeacherApplications = async (req, res) => {
   try {
-    const isAdmin = await User.findById(req.userId);
-    if (!isAdmin || isAdmin.role !== "admin") {
-      return res.status(403).json({ message: "You are not Admin" });
-    }
     const users = await User.find({
       isAppliedForTeacherRole: true,
       isTeacher: false,
@@ -71,10 +60,6 @@ export const getAllTeacherApplications = async (req, res) => {
 
 export const getAllUsers = async (req, res) => {
   try {
-    const isAdmin = await User.findById(req.userId);
-    if (!isAdmin || isAdmin.role !== "admin") {
-      return res.status(403).json({ message: "You are not Admin" });
-    }
     const users = await User.find({
       userName: { $ne: "AI" },
       _id: { $ne: req.userId },
@@ -83,6 +68,43 @@ export const getAllUsers = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       message: "Error Fetching users",
+      error: error.message,
+    });
+  }
+};
+
+export const getCustomUsers = async (req, res) => {
+  try {
+    const { usersType } = req.params;
+    if (!usersType)
+      return res.status(400).json({ message: "userType is required" });
+
+    const baseFilter = { userName: { $ne: "AI" }, _id: { $ne: req.userId } };
+    let filter = {};
+
+    switch (usersType) {
+      case "banned":
+        filter = { ...baseFilter, isBanned: true };
+        break;
+      case "teacher":
+        filter = { ...baseFilter, isTeacher: true };
+        break;
+      case "student":
+        filter = { ...baseFilter, role: "student" };
+        break;
+      default:
+        filter = baseFilter;
+    }
+
+    const users = await User.find(filter).select("-password");
+    return res.status(200).json({
+      success: true,
+      message: "Users fetched successfully",
+      users,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Error fetching users",
       error: error.message,
     });
   }

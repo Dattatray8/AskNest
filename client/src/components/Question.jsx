@@ -7,7 +7,7 @@ function Question({ q }) {
   const { userData } = useSelector((state) => state.user);
   const navigation = useNavigate();
   return (
-    <div className="card mb-4 rounded-none">
+    <div className="card mb-4 rounded-none bg-base-100">
       <div
         className="card-body p-4 flex flex-col items-start cursor-pointer gap-2"
         onClick={() => navigation(`/question/${q?._id}`)}

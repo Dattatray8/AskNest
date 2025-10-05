@@ -22,6 +22,8 @@ function ProfileTabs({ role, roleTabs, userId }) {
               navigate(`/users/${tab.key}`);
             } else if (tab.key === "allUsers") {
               navigate(`/${tab.key}`);
+            } else if (tab.key === "all" || tab.key === "unanswered") {
+              navigate(`/questions/${tab.key}`);
             } else {
               navigate(`/profile/${userId}/${tab.key}`);
             }

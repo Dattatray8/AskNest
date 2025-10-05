@@ -11,6 +11,7 @@ import questionRouter from "./routes/question.routes.js";
 import answerRouter from "./routes/answer.routes.js";
 import studentRouter from "./routes/student.routes.js";
 import adminRouter from "./routes/admin.routes.js";
+import teacherRouter from "./routes/teacher.routes.js";
 
 dotenv.config();
 
@@ -30,6 +31,7 @@ app.use("/api/v1/questions", questionRouter);
 app.use("/api/v1/answers", answerRouter);
 app.use("/api/v1/student", studentRouter);
 app.use("/api/v1/admin", adminRouter);
+app.use("/api/v1/teacher", teacherRouter);
 
 server.listen(process.env.PORT, () => {
   dbConnection();

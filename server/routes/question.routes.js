@@ -3,6 +3,7 @@ import isAuth from "../middlewares/isAuth.js";
 import {
   allQuestions,
   askQuestion,
+  getCustomQuestions,
   getQuestion,
   iGotMyAnswer,
 } from "../controllers/question.controller.js";
@@ -13,5 +14,6 @@ questionRouter.post("/", isAuth, askQuestion);
 questionRouter.get("/", isAuth, allQuestions);
 questionRouter.get("/:questionId", isAuth, getQuestion);
 questionRouter.put("/:questionId/:answerId/stop", isAuth, iGotMyAnswer);
+questionRouter.post("/filter/:questionType", isAuth, getCustomQuestions);
 
 export default questionRouter;

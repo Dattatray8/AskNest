@@ -7,7 +7,7 @@ export const roleTabs = {
   ],
   teacher: [
     { label: "Answers", key: "t_answers" },
-    { label: "Unanswered Questions", key: "unansweredQuestions" },
+    { label: "Unanswered Questions", key: "unanswered" },
   ],
   admin: [
     { label: "Reported Questions", key: "reportedQuestions" },
@@ -15,7 +15,7 @@ export const roleTabs = {
     { label: "Reported Messages", key: "reportedMessages" },
     { label: "Teacher Applications", key: "teacherApplications" },
     { label: "All Users", key: "allUsers" },
-    { label: "All Questions", key: "allQuestions" },
-    { label: "Unanswered Questions", key: "unansweredQuestions" },
+    { label: "All Questions", key: "all" },
+    { label: "Unanswered Questions", key: "unanswered" },
   ],
 };
