@@ -48,7 +48,7 @@ export const allAnswers = async (req, res) => {
   try {
     const { questionId } = req.params;
     const answers = await Answer.find({ question: questionId })
-      .populate("user", "userName profileImage")
+      .populate("user", "userName profileImage role isTeacher")
       .sort({ createdAt: -1 });
     return res.status(200).json({
       success: true,

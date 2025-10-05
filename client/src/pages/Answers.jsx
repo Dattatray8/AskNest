@@ -1,4 +1,4 @@
-import { ChevronLeft, MoreVertical } from "lucide-react";
+import { Check, ChevronLeft, MoreVertical } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import useQuestion from "../hooks/useQuestion";
 import { formatTimestamp } from "../utils/formatTimeStamp";
@@ -73,6 +73,23 @@ function Answers() {
       toast.success(res?.data?.message);
       setAllAnswers((prev) =>
         prev.map((a) => (a._id === ansId ? { ...a, gotAnswer: true } : a))
+      );
+    } catch (error) {
+      toast.error(error?.response?.data?.message || error?.message);
+    }
+  };
+
+  const verifyAnswer = async (ansId) => {
+    try {
+      const res = await axios.put(
+        `${serverUrl}/api/v1/teacher/verify/${ansId}`,
+        {},
+        { withCredentials: true }
+      );
+      console.log(res);
+      toast.success(res?.data?.message);
+      setAllAnswers((prev) =>
+        prev.map((a) => (a._id === ansId ? { ...a, verifiedAnswer: true } : a))
       );
     } catch (error) {
       toast.error(error?.response?.data?.message || error?.message);
@@ -208,16 +225,23 @@ function Answers() {
 
       {allAnswers?.map((ans, index) => (
         <div
-          className={`card-body mb-10 w-full ${
+          className={`card-body mb-12 w-full ${
             answerTabOpen ? "opacity-10" : "opacity-100"
           }`}
           key={index}
         >
-          {ans?.gotAnswer && (
-            <div className="badge badge-outline badge-warning rounded-full">
-              Accepted
-            </div>
-          )}
+          <div className="flex gap-2">
+            {ans?.gotAnswer && (
+              <div className="badge badge-outline badge-warning rounded-full">
+                Accepted
+              </div>
+            )}
+            {ans?.verifiedAnswer && (
+              <div className="badge badge-outline badge-success rounded-full">
+                Verified
+              </div>
+            )}
+          </div>
           <p className="w-full overflow-y-auto whitespace-pre-wrap">
             {ans?.answer}
           </p>
@@ -234,17 +258,46 @@ function Answers() {
             >
               {ans?.user?.userName || "Anonymous"}
             </h2>
-            <p className="cursor-default">{formatTimestamp(ans?.createdAt)}</p>
+            <span className="cursor-default">
+              {formatTimestamp(ans?.createdAt)}
+            </span>
+            {ans?.user?.role === "teacher" && ans?.user?.isTeacher && (
+              <div className="flex justify-center items-center p-0.5 bg-success rounded-full">
+                <Check
+                  size={"1rem"}
+                  className="text-base-100 flex justify-center"
+                />
+              </div>
+            )}
+
             {userData?._id === question?.user?._id &&
               question?.user?.role === "student" &&
               !question?.stopAnswering && (
-                <details className="dropdown dropdown-end">
+                <details className="dropdown dropdown-end absolute right-0">
                   <summary className="btn m-1 p-0 btn-circle">
                     <MoreVertical />
                   </summary>
                   <ul className="menu dropdown-content bg-base-100 rounded-box z-1 w-52 p-2 shadow-lg">
                     <li>
                       <a onClick={() => markAsIGotMyAnswer(ans?._id)}>Accept</a>
+                    </li>
+                  </ul>
+                </details>
+              )}
+
+            {userData?._id !== ans?.user?._id &&
+              userData?.role === "teacher" &&
+              userData?.isTeacher &&
+              !ans?.verifiedAnswer && (
+                <details className="dropdown dropdown-end absolute right-0">
+                  <summary className="btn m-1 p-0 btn-circle">
+                    <MoreVertical />
+                  </summary>
+                  <ul className="menu dropdown-content bg-base-100 rounded-box z-1 w-52 p-2 shadow-lg">
+                    <li>
+                      <a onClick={() => verifyAnswer(ans?._id)}>
+                        Mark As Verified
+                      </a>
                     </li>
                   </ul>
                 </details>
