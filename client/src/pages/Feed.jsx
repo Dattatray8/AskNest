@@ -1,15 +1,17 @@
 import { useNavigate } from "react-router-dom";
 import BottomBar from "../components/BottomBar";
 import useQuestions from "../hooks/useQuestions";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import EmptyQuestionMessage from "../components/EmptyQuestionMessage";
 import Question from "../components/Question";
 import { ChevronLeft } from "lucide-react";
+import { setPage } from "../redux/questionSlice";
 
 function Feed() {
   const navigation = useNavigate();
-  const { loading } = useQuestions();
-  const { questions } = useSelector((state) => state.question);
+  const { loading, hasMore } = useQuestions();
+  const { questions, page } = useSelector((state) => state.question);
+  const dispatch = useDispatch();
 
   return (
     <div className="w-full h-full">
@@ -49,10 +51,24 @@ function Feed() {
       ) : questions.length === 0 ? (
         <EmptyQuestionMessage />
       ) : (
-        <div className="w-full mb-18 sm:mb-0 overflow-y-auto bg-base-300">
+        <div
+          className={`w-full overflow-y-auto bg-base-300 ${
+            !hasMore && "mb-18"
+          }`}
+        >
           {questions.map((q, index) => (
             <Question q={q} key={index} />
           ))}
+        </div>
+      )}
+      {hasMore && (
+        <div className="flex justify-center mb-20 sm:mb-0">
+          <button
+            className="btn m-4"
+            onClick={() => dispatch(setPage(page + 1))}
+          >
+            Load More
+          </button>
         </div>
       )}
 

@@ -50,7 +50,12 @@ export const getQuestion = async (req, res) => {
 
 export const allQuestions = async (req, res) => {
   try {
+    const { page } = req.params;
+    let limit = 5;
+    let skip = (page - 1) * limit;
     const questions = await Question.find()
+      .skip(skip)
+      .limit(limit)
       .populate("user", "userName profileImage")
       .populate("answers")
       .sort({ createdAt: -1 });
@@ -115,7 +120,7 @@ export const getCustomQuestions = async (req, res) => {
         filter = { stopAnswering: true };
         break;
       case "t_answers":
-        filter = {  }
+        filter = {};
       default:
         filter = {};
     }

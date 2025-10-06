@@ -6,6 +6,7 @@ const questionSlice = createSlice({
     questions: [],
     loading: false,
     filteredQuestions: [],
+    page: 1,
   },
   reducers: {
     setQuestions: (state, action) => {
@@ -17,10 +18,13 @@ const questionSlice = createSlice({
     setFilteredQuestions: (state, action) => {
       state.filteredQuestions = action.payload;
     },
+    setPage: (state, action) => {
+      state.page = action.payload;
+    },
   },
 });
 
-export const { setQuestions, setLoading, setFilteredQuestions } =
+export const { setQuestions, setLoading, setFilteredQuestions, setPage } =
   questionSlice.actions;
 
 export default questionSlice.reducer;
