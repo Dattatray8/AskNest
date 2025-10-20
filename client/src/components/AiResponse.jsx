@@ -1,9 +1,10 @@
-import { Bot, Copy, CheckCircle } from "lucide-react";
+import { Bot, Copy, CheckCircle, Volume2 } from "lucide-react";
 import { useRef, useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { formatTimestamp } from "../utils/formatTimeStamp";
+import { speakText } from "../utils/speakText";
 
 function AiResponse({ message }) {
   const sender = useRef();
@@ -32,7 +33,7 @@ function AiResponse({ message }) {
             style={oneDark}
             language={match[1]}
             PreTag="div"
-            className="!m-0 !p-4 rounded-lg text-sm overflow-x-auto"
+            className="!m-0 !p-2 sm:!p-4 rounded-lg text-sm overflow-x-auto"
             {...props}
           >
             {String(children).replace(/\n$/, "")}
@@ -76,7 +77,7 @@ function AiResponse({ message }) {
     ),
 
     ul: ({ children }) => (
-      <ul className="list-disc ml-6 mb-4 space-y-2 text-gray-800 dark:text-gray-200">
+      <ul className="list-disc sm:ml-6 ml-2 mb-4 space-y-2 text-gray-800 dark:text-gray-200">
         {children}
       </ul>
     ),
@@ -144,6 +145,12 @@ function AiResponse({ message }) {
             ) : (
               <Copy className="w-3 h-3" />
             )}
+          </button>
+          <button
+            onClick={() => speakText(message?.message)}
+            className="btn btn-circle w-5 h-5 btn-outline"
+          >
+            <Volume2 className="w-3 h-3" />
           </button>
         </div>
 

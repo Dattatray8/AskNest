@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function AutoExpandTextarea({ placeholder, onChange }) {
+function AutoExpandTextarea({ placeholder, onChange, question, answer }) {
   const [value, setValue] = useState("");
 
   const handleChange = (e) => {
@@ -15,7 +15,7 @@ function AutoExpandTextarea({ placeholder, onChange }) {
       className="w-full p-2 resize-none focus:outline-none bg-transparent text-lg leading-relaxed"
       rows={1}
       placeholder={placeholder || "Write here..."}
-      value={value}
+      value={value || question || answer}
       onChange={handleChange}
     />
   );

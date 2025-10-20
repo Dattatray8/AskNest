@@ -1,3 +1,4 @@
+import uploadOnCloudinary from "../config/cloudinary.js";
 import Chat from "../models/chat.model.js";
 import Message from "../models/message.model.js";
 import User from "../models/user.model.js";
@@ -7,10 +8,16 @@ import { askToGemini } from "./gemini.controller.js";
 export const sendMessage = async (req, res) => {
   try {
     const senderId = req.userId;
-    const { message } = req.body;
+    const { message, mediaType } = req.body;
+    let media;
+    if (req.file) {
+      media = await uploadOnCloudinary(req.file.path);
+    }
     let newMessage = await Message.create({
       sender: senderId,
       message,
+      media: media || null,
+      mediaType: mediaType || null,
     });
     newMessage = await newMessage.populate("sender");
     let chat = await Chat.findOne();

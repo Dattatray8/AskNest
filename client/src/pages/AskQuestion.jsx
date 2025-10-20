@@ -57,6 +57,7 @@ function AskQuestion() {
       </div>
       <div className="h-[45vh] p-4">
         <AutoExpandTextarea
+          question={question}
           placeholder="Write your question..."
           onChange={(val) => setQuestion(val)}
         />
@@ -67,10 +68,7 @@ function AskQuestion() {
             <a
               className="tooltip"
               data-tip="Mic"
-              // onClick={() => recognition.start()}
-              onClick={() => {
-                toast("🚧 Feature under development!");
-              }}
+              onClick={() => recognition.start()}
             >
               <svg
                 aria-label="New voice"

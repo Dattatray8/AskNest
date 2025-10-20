@@ -18,7 +18,6 @@ function useAnswerVerifiedQuestions(studentId) {
             withCredentials: true,
           }
         );
-        console.log(result);
         dispatch(setQuestionsVerifed(result?.data?.answerVerifiedQuestion));
       } catch (error) {
         dispatch(setLoading(false));

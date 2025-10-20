@@ -167,17 +167,17 @@ function Answers() {
               Add
             </button>
           </div>
-          <AutoExpandTextarea onChange={(val) => setAnswer(val)} />
+          <AutoExpandTextarea
+            onChange={(val) => setAnswer(val)}
+            answer={answer}
+          />
           <div className="px-4">
             <ul className="menu w-full menu-horizontal rounded-box">
               <li>
                 <a
                   className="tooltip"
                   data-tip="Mic"
-                  // onClick={() => recognition.start()}
-                  onClick={() => {
-                    toast("🚧 Feature under development!");
-                  }}
+                  onClick={() => recognition.start()}
                 >
                   <svg
                     aria-label="New voice"

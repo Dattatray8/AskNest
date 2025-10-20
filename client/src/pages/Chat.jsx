@@ -1,6 +1,6 @@
 import axios from "axios";
 import { ChevronLeft, Video } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SenderMessage from "../components/SenderMessage";
 import ReceiverMessage from "../components/ReceiverMessage";
@@ -21,8 +21,25 @@ function Chat() {
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const { socket } = useSocket();
+  const [mediaType, setMediaType] = useState("");
   const { onlineUsers } = useContext(SocketContext);
   const [sendLoading, setSendLoading] = useState(false);
+  const [frontendImage, setFrontendImage] = useState(null);
+  const [backendImage, setBackendImage] = useState(null);
+  const imageInput = useRef();
+
+  const handleImage = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.type.includes("image")) {
+        setMediaType("image");
+      } else {
+        setMediaType("video");
+      }
+      setBackendImage(file);
+      setFrontendImage(URL.createObjectURL(file));
+    }
+  };
 
   let voiceRecognition =
     window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -43,14 +60,18 @@ function Chat() {
     }
     try {
       setSendLoading(true);
-      //   const formdata = new FormData();
-      //   formdata.append("message", message);
-      await axios.post(
-        `${serverUrl}/api/v1/chat/send`,
-        { message },
-        { withCredentials: true }
-      );
+      const formdata = new FormData();
+      formdata.append("message", message);
+      formdata.append("mediaType", mediaType);
+      if (backendImage) {
+        formdata.append("media", backendImage);
+      }
+      await axios.post(`${serverUrl}/api/v1/chat/send`, formdata, {
+        withCredentials: true,
+      });
       setMessage("");
+      setFrontendImage(null);
+      setBackendImage(null);
     } catch (error) {
       setSendLoading(false);
       console.log(error?.response?.data?.message || error?.message);
@@ -69,7 +90,7 @@ function Chat() {
       });
       dispatch(setMessages(result?.data?.messages));
     } catch (error) {
-      console.log(error?.response?.data?.message || error?.message);
+      toast.error(error?.response?.data?.message || error?.message);
       setLoading(false);
     } finally {
       setLoading(false);
@@ -130,6 +151,49 @@ function Chat() {
           value={message}
           onChange={(e) => setMessage(e.target.value)}
         />
+        {frontendImage && (
+          <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-40 w-11/12 sm:w-[400px] bg-base-200 rounded-2xl p-3 shadow-lg border border-base-300">
+            <div className="relative">
+              {mediaType === "image" ? (
+                <img
+                  src={frontendImage}
+                  alt="Selected"
+                  className="w-full h-64 object-cover rounded-xl"
+                />
+              ) : (
+                <video
+                  src={frontendImage}
+                  controls
+                  className="w-full h-64 object-cover rounded-xl"
+                />
+              )}
+              <button
+                type="button"
+                onClick={() => {
+                  setFrontendImage(null);
+                  setBackendImage(null);
+                  setMediaType("");
+                }}
+                className="btn btn-sm btn-circle absolute top-2 right-2 bg-base-100 hover:bg-error hover:text-white"
+              >
+                ✕
+              </button>
+            </div>
+            <p className="text-center text-sm mt-2 text-gray-500">
+              {mediaType === "image"
+                ? "Selected image preview"
+                : "Selected video preview"}
+            </p>
+          </div>
+        )}
+
+        <input
+          type="file"
+          accept="image/*,video/*"
+          ref={imageInput}
+          hidden
+          onChange={handleImage}
+        />
         <div className="fab fab-flower absolute right-17 sm:right-[30vw] md:right-[29vw] lg:right-[28vw] lg:mr- xl:right-[27.25vw] z-[100]">
           <div tabIndex={0} role="button" className="btn btn-circle btn-lg">
             <svg
@@ -159,17 +223,13 @@ function Chat() {
           </button>
           <button
             className="btn btn-circle btn-lg"
-            onClick={() => {
-              toast("🚧 Feature under development!");
-            }}
+            onClick={() => imageInput.current.click()}
           >
             <Video />
           </button>
           <button
             className="btn btn-circle btn-lg"
-            onClick={() => {
-              toast("🚧 Feature under development!");
-            }}
+            onClick={() => imageInput.current.click()}
           >
             <svg
               aria-label="New gallery photo"
