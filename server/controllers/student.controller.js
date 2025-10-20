@@ -107,3 +107,44 @@ export const acceptedAnswers = async (req, res) => {
     });
   }
 };
+
+export const verifiedAnswers = async (req, res) => {
+  try {
+    const { studentId } = req.params;
+    if (!studentId) {
+      return res
+        .status(400)
+        .json({ success: false, message: "studentId required" });
+    }
+    const answers = await Answer.find({ user: studentId, verifiedAnswer: true })
+      .populate("question")
+      .sort({ createdAt: -1 });
+    const answerVerifiedQuestion = [];
+    const seenQuestionIds = new Set();
+
+    await Promise.all(
+      answers.map(async (answer) => {
+        const populatedQuestion = await Question.findById(
+          answer.question._id
+        ).populate("user", "userName profileImage");
+        if (
+          populatedQuestion &&
+          !seenQuestionIds.has(populatedQuestion._id.toString())
+        ) {
+          answerVerifiedQuestion.push(populatedQuestion);
+          seenQuestionIds.add(populatedQuestion._id.toString());
+        }
+      })
+    );
+    return res.status(200).json({
+      success: true,
+      answerVerifiedQuestion,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch answers",
+      error: error.message,
+    });
+  }
+};

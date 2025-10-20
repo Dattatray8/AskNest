@@ -220,7 +220,7 @@ function Answers() {
       )}
 
       <div className={`divider ${answerTabOpen ? "hidden" : ""}`}>
-        Answers ({question?.answers?.length || 0})
+        Answers ({allAnswers?.length || 0})
       </div>
 
       {allAnswers?.map((ans, index) => (

@@ -7,6 +7,7 @@ import useAnsweredQuestions from "../hooks/useAnsweredQuestions";
 import useAnswerAcceptedQuestions from "../hooks/useAnswerAcceptedQuestions";
 import { useSelector } from "react-redux";
 import useAllTeacherAnswers from "../hooks/useAllTeacherAnswers";
+import useAnswerVerifiedQuestions from "../hooks/useAnswerVerifiedQuestions";
 
 function ProfileTabPage() {
   const { userId, tabKey } = useParams();
@@ -19,10 +20,13 @@ function ProfileTabPage() {
   useAnsweredQuestions(userId);
   useAnswerAcceptedQuestions(userId);
   useAllTeacherAnswers(userId);
+  useAnswerVerifiedQuestions(userId);
 
   const { questionsAsked } = useSelector((state) => state.student);
   const { questionsAnswered } = useSelector((state) => state.student);
-  const { questionsAccepted } = useSelector((state) => state.student);
+  const { questionsAccepted, questionsVerified } = useSelector(
+    (state) => state.student
+  );
   const { teacherAnswers } = useSelector((state) => state.admin);
 
   let dataToRender = [];
@@ -35,8 +39,11 @@ function ProfileTabPage() {
   if (tabLabel === "Accepted Answers" && profileData?.role === "student") {
     dataToRender = questionsAccepted || [];
   }
+  if (tabLabel === "Verified Answers" && profileData?.role === "student") {
+    dataToRender = questionsVerified || [];
+  }
   if (tabLabel === "Answers" && profileData?.role === "teacher") {
-    dataToRender = teacherAnswers || []; 
+    dataToRender = teacherAnswers || [];
   }
 
   return (

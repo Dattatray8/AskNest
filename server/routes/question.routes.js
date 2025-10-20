@@ -11,7 +11,7 @@ import {
 const questionRouter = express(Router());
 
 questionRouter.post("/", isAuth, askQuestion);
-questionRouter.get("/:page", isAuth, allQuestions);
+questionRouter.get("/page/:page", isAuth, allQuestions);
 questionRouter.get("/:questionId", isAuth, getQuestion);
 questionRouter.put("/:questionId/:answerId/stop", isAuth, iGotMyAnswer);
 questionRouter.post("/filter/:questionType", isAuth, getCustomQuestions);

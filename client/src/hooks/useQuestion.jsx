@@ -22,7 +22,7 @@ function useQuestion(qId) {
       }
     };
     getQuestion();
-  }, []);
+  }, [qId]);
   return { loading, question };
 }
 

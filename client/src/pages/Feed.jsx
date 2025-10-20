@@ -53,7 +53,7 @@ function Feed() {
       ) : (
         <div
           className={`w-full overflow-y-auto bg-base-300 ${
-            !hasMore && "mb-18"
+            !hasMore && "mb-18 sm:mb-0"
           }`}
         >
           {questions.map((q, index) => (

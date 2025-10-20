@@ -17,7 +17,7 @@ function useQuestions() {
     const fetchQuestions = async () => {
       try {
         setLoading(true);
-        const res = await axios.get(`${serverUrl}/api/v1/questions/${page}`, {
+        const res = await axios.get(`${serverUrl}/api/v1/questions/page/${page}`, {
           withCredentials: true,
         });
         if (res?.data?.questions.length === 0) {
