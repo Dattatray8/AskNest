@@ -3,7 +3,7 @@ import AppRoutes from "./routes/AppRoutes";
 import { Toaster } from "react-hot-toast";
 import SocketContext from "./context/SocketContext";
 
-export const serverUrl = "https://queryspherebackend.onrender.com";
+export const serverUrl = "http://localhost:8000";
 
 function App() {
   const { theme } = useContext(SocketContext);

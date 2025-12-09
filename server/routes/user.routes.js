@@ -9,6 +9,7 @@ import {
   search,
 } from "../controllers/user.controller.js";
 import { upload } from "../middlewares/multer.js";
+import isGuest from "../middlewares/isGuest.js";
 
 const userRouter = express(Router());
 
@@ -20,7 +21,7 @@ userRouter.post(
   editProfile
 );
 userRouter.get("/profile/:userName", isAuth, getProfile);
-userRouter.get("/search", isAuth, search);
+userRouter.get("/search", isGuest, search);
 userRouter.post("/applyTeacherRole", isAuth, applyForTeacherRole);
 userRouter.post("/removeTeacherApplication", isAuth, removeApplicationForTeacherRole);
 

@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { serverUrl } from "../App";
 import userImg from "../assets/user.png";
+import toast from "react-hot-toast";
 
 function Search() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -19,18 +20,19 @@ function Search() {
     setError("");
 
     try {
-      const { data } = await axios.get(
+      const res = await axios.get(
         `${serverUrl}/api/v1/users/search?keyword=${encodeURIComponent(
           searchTerm.trim()
         )}`,
         { withCredentials: true }
       );
       setResults(
-        data?.users?.filter(
+        res?.data?.users?.filter(
           (user) => user?.userName !== "AI" && user?.userName !== "Admin"
         ) || []
       );
-    } catch {
+    } catch (error) {
+      toast.error(error?.response?.data?.message || error?.message);
       setError("Search failed. Please try again.");
       setResults([]);
     } finally {

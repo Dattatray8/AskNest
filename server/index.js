@@ -12,15 +12,29 @@ import answerRouter from "./routes/answer.routes.js";
 import studentRouter from "./routes/student.routes.js";
 import adminRouter from "./routes/admin.routes.js";
 import teacherRouter from "./routes/teacher.routes.js";
+import rateLimit from "express-rate-limit";
 
 dotenv.config();
 
 app.use(
   cors({
-    origin: "https://query-sphere.onrender.com",
+    origin: "http://localhost:5173",
     credentials: true,
   })
 );
+
+const globalRateLimiter = rateLimit({
+  windowMs: 10 * 60 * 1000,
+  max: 200,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    success: false,
+    message: "Too many requests, please try again later.",
+  }
+})
+
+app.use(globalRateLimiter);
 
 app.use(express.json());
 app.use(cookieParser());
