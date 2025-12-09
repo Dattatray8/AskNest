@@ -1,11 +1,13 @@
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { setUserData } from "../redux/userSlice";
 import { serverUrl } from "../App";
 import axios from "axios";
-import user from "../assets/user.png";
+import userPlaceholder from "../assets/user.png";
 import { useContext } from "react";
 import SocketContext from "../context/SocketContext";
+import ThemeDropdown from "./ThemeDropdown";
+import { themeList } from "../constants/themeList";
 
 function Navbar() {
   const { userData } = useSelector((state) => state.user);
@@ -18,90 +20,51 @@ function Navbar() {
       await axios.get(`${serverUrl}/api/v1/auth/logout`, {
         withCredentials: true,
       });
+
       dispatch(setUserData(null));
+      navigate("/login");
     } catch (error) {
       console.log(error);
     }
   };
 
-  const themeList = [
-    "light",
-    "dark",
-    "dracula",
-    "synthwave",
-    "cyberpunk",
-    "retro",
-    "forest",
-    "garden",
-    "aqua",
-    "nord",
-    "luxury",
-    "business",
-    "black",
-    "halloween",
-    "valentine",
-    "sunset",
-    "coffee",
-    "bumblebee",
-    "emerald",
-    "acid",
-  ];
-
   return (
-    <div className="navbar fixed top-0 left-0 w-full z-50 bg-base-100">
+    <div className="navbar fixed top-0 left-0 w-full z-50 bg-base-100 shadow-sm px-4">
+      {/* Left: Logo */}
       <div className="flex-1">
-        <a
-          className="px-4 font-semibold cursor-pointer text-xl"
-          onClick={() => navigate("/")}
-        >
+        <Link to="/" className="font-semibold px-4 text-xl cursor-pointer">
           QuerySphere
-        </a>
+        </Link>
       </div>
 
-      {/* Desktop links */}
+      {/* Desktop Navigation */}
       <div className="hidden sm:flex gap-4">
         <ul className="menu menu-horizontal gap-4">
-          <li>
-            <a onClick={() => navigate("/search")}>Search</a>
-          </li>
-          <li>
-            <a onClick={() => navigate("/chat")}>Chat</a>
-          </li>
-          <li>
-            <a onClick={() => navigate("/feed")}>Feed</a>
-          </li>
+          <li><button onClick={() => navigate("/search")}>Search</button></li>
+          <li><button onClick={() => navigate("/chat")}>Chat</button></li>
+          <li><button onClick={() => navigate("/feed")}>Feed</button></li>
+
           <li>
             <details>
               <summary>🎨 {theme}</summary>
-              <ul className="bg-base-100 p-2 w-40 max-h-60 overflow-y-auto">
-                {themeList.map((t) => (
-                  <li key={t}>
-                    <a onClick={() => setTheme(t)}>{t}</a>
-                  </li>
-                ))}
-              </ul>
+              <ThemeDropdown themeList={themeList} setTheme={setTheme} />
             </details>
           </li>
         </ul>
       </div>
 
+      {/* Right: User or Login */}
       <div className="flex items-center gap-4">
+
+        {/* Mobile Theme Dropdown */}
         <div className="sm:hidden">
-          <ul className="menu menu-horizontal gap-4">
-            <li>
-              <details>
-                <summary>🎨 {theme}</summary>
-                <ul className="bg-base-100 p-2 w-40 max-h-60 overflow-y-auto">
-                  {themeList.map((t) => (
-                    <li key={t}>
-                      <a onClick={() => setTheme(t)}>{t}</a>
-                    </li>
-                  ))}
-                </ul>
-              </details>
-            </li>
-          </ul>
+          <details>
+            <summary>🎨 {theme}</summary>
+            <ThemeDropdown themeList={themeList} setTheme={setTheme} />
+          </details>
         </div>
+
+        {/* Auth Section */}
         {userData ? (
           <div className="dropdown dropdown-end">
             <div
@@ -110,21 +73,24 @@ function Navbar() {
               className="btn btn-ghost btn-circle avatar"
             >
               <div className="w-10 rounded-full">
-                <img src={userData?.profileImage || user} alt="profile" />
+                <img
+                  src={userData?.profileImage || userPlaceholder}
+                  alt="User Avatar"
+                />
               </div>
             </div>
+
             <ul
               tabIndex={0}
               className="menu menu-sm dropdown-content bg-base-100 rounded-box mt-3 w-40 shadow"
             >
               <li className="hidden sm:block">
-                <a onClick={() => navigate(`/profile/${userData?.userName}`)}>
+                <button onClick={() => navigate(`/profile/${userData?.userName}`)}>
                   Profile
-                </a>
+                </button>
               </li>
-              <li>
-                <a onClick={handleLogOut}>Logout</a>
-              </li>
+
+              <li><button onClick={handleLogOut}>Logout</button></li>
             </ul>
           </div>
         ) : (
