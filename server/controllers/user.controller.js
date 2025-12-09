@@ -86,9 +86,10 @@ export const search = async (req, res) => {
     const users = await User.find({
       _id: { $ne: req.userId },
       $or: [{ userName: { $regex: keyword, $options: "i" } }],
+      $and: [{ userName: { $ne: "AI" } }, { userName: { $ne: "Admin" } }],
     }).select("-password");
 
-    return res.status(200).json({ users });
+    return res.status(200).json({ success: true, message: "Users fetched successfully", users });
   } catch (error) {
     return res.status(500).json({
       message: "Error in to search user",

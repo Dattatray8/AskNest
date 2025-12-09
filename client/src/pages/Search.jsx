@@ -10,14 +10,12 @@ function Search() {
   const [searchTerm, setSearchTerm] = useState("");
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const searchUsers = async () => {
     if (!searchTerm.trim()) return;
 
     setLoading(true);
-    setError("");
 
     try {
       const res = await axios.get(
@@ -26,14 +24,10 @@ function Search() {
         )}`,
         { withCredentials: true }
       );
-      setResults(
-        res?.data?.users?.filter(
-          (user) => user?.userName !== "AI" && user?.userName !== "Admin"
-        ) || []
-      );
+
+      setResults(res.data.users || []);
     } catch (error) {
-      toast.error(error?.response?.data?.message || error?.message);
-      setError("Search failed. Please try again.");
+      toast.error(error?.response?.data?.message || "Search failed");
       setResults([]);
     } finally {
       setLoading(false);
@@ -41,25 +35,18 @@ function Search() {
   };
 
   const handleInput = (e) => {
-    setSearchTerm(e.target.value);
-    if (!e.target.value.trim()) {
-      setResults([]);
-      setError("");
-    }
+    const value = e.target.value;
+    setSearchTerm(value);
+    if (!value.trim()) setResults([]);
   };
 
   return (
     <div className="min-h-screen bg-base-100">
       <div className="navbar border-b">
-        <button
-          className="btn btn-ghost btn-circle"
-          onClick={() => navigate(-1)}
-        >
+        <button className="btn btn-ghost btn-circle" onClick={() => navigate(-1)}>
           <ArrowLeft className="h-5 w-5" />
         </button>
-        <h1 className="flex-1 text-center text-xl font-semibold">
-          Search Users
-        </h1>
+        <h1 className="flex-1 text-center text-xl font-semibold">Search Users</h1>
         <div className="w-12" />
       </div>
 
@@ -67,7 +54,7 @@ function Search() {
         <div className="join w-full">
           <input
             type="text"
-            placeholder="Search by username or name..."
+            placeholder="Search by username..."
             value={searchTerm}
             onChange={handleInput}
             onKeyDown={(e) => e.key === "Enter" && searchUsers()}
@@ -92,20 +79,10 @@ function Search() {
         {loading && (
           <div className="text-center py-12">
             <span className="loading loading-spinner loading-lg" />
-            <p className="mt-4 text-base-content/70">Searching...</p>
           </div>
         )}
 
-        {error && (
-          <div className="alert alert-error max-w-md mx-auto">
-            <span>{error}</span>
-            <button className="btn btn-sm" onClick={searchUsers}>
-              Retry
-            </button>
-          </div>
-        )}
-
-        {!loading && !error && searchTerm && results.length === 0 && (
+        {!loading && searchTerm && results.length === 0 && (
           <div className="text-center py-12">
             <SearchIcon className="h-16 w-16 mx-auto text-base-content/30 mb-4" />
             <h3 className="text-lg font-semibold">No users found</h3>
