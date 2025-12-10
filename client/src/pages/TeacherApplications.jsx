@@ -1,19 +1,19 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { getLabel } from "../utils/getLabel";
-import useAllTeacherApplications from "../hooks/useAllTeacherApplications";
 import { useSelector } from "react-redux";
 import { ChevronLeft } from "lucide-react";
 import user from "../assets/user.png";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { serverUrl } from "../App";
+import useProfileTabData from "../hooks/profile/useProfileTabData";
 
 function TeacherApplications() {
   const { tabKey } = useParams();
-  const { loading } = useSelector((state) => state.question);
   let tabLabel = getLabel(tabKey);
   const navigation = useNavigate();
-  useAllTeacherApplications();
+
+  const { loading } = useProfileTabData(tabKey);
 
   const { teacherApplications } = useSelector((state) => state.admin);
 

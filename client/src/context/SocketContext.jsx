@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { createContext } from "react";
 import { useSelector } from "react-redux";
-import { serverUrl } from "../App";
+import { serverUrl } from "../config/config";
 import { io } from "socket.io-client";
 
 const SocketContext = createContext();

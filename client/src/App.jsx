@@ -3,7 +3,7 @@ import AppRoutes from "./routes/AppRoutes";
 import { Toaster } from "react-hot-toast";
 import SocketContext from "./context/SocketContext";
 
-export const serverUrl = "http://localhost:8000";
+export const serverUrl = import.meta.env.VITE_BACKEND_URL;
 
 function App() {
   const { theme } = useContext(SocketContext);

@@ -6,28 +6,29 @@ import { setProfileData, setUserData } from "../redux/userSlice";
 import axios from "axios";
 import { serverUrl } from "../App";
 import { useEffect, useState } from "react";
-import user from "../assets/user.png";
+import userI from "../assets/user.png";
 import { roleTabs } from "../config/roleTabs";
 import ProfileHeader from "../components/profile/ProfileHeader";
 import ProfileBio from "../components/profile/ProfileBio";
 import ProfileTabs from "../components/profile/ProfileTabs";
 import ProfileSkeleton from "../components/profile/ProfileSkeleton";
 import toast from "react-hot-toast";
+import useCurrentUser from "../hooks/auth/useCurrentUser";
 
 function Profile() {
-  const { userName } = useParams();
-  const { profileData, userData } = useSelector((state) => state.user);
+  const { id } = useParams();
+  const { profileData } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const navigation = useNavigate();
   const [load, setLoading] = useState(false);
+  const { user } = useCurrentUser();
 
   const handleProfile = async () => {
     try {
       setLoading(true);
-      const res = await axios.get(
-        `${serverUrl}/api/v1/users/profile/${userName}`,
-        { withCredentials: true }
-      );
+      const res = await axios.get(`${serverUrl}/api/v1/users/profile/${id}`, {
+        withCredentials: true,
+      });
       dispatch(setProfileData(res?.data?.user));
     } catch (error) {
       console.log(error);
@@ -39,7 +40,7 @@ function Profile() {
 
   useEffect(() => {
     handleProfile();
-  }, [userName, dispatch]);
+  }, [id, dispatch]);
 
   const handleLogOut = async () => {
     try {
@@ -104,16 +105,16 @@ function Profile() {
         <div className="sm:w-full max-w-5xl w-full px-6 sm:px-8 m-auto py-8 flex flex-col gap-6">
           <ProfileHeader
             profileData={profileData}
-            userData={userData}
-            user={user}
+            userData={user}
+            user={userI}
             onEdit={() => navigation("/editprofile")}
           />
 
           {profileData?.bio && <ProfileBio bio={profileData?.bio} />}
 
-          {userData?.role === "teacher" &&
-            !userData?.isAppliedForTeacherRole &&
-            !userData?.isTeacher && (
+          {user?.role === "teacher" &&
+            !user?.isAppliedForTeacherRole &&
+            !user?.isTeacher && (
               <button
                 className="btn btn-primary btn-wide max-w-sm self-center w-full"
                 onClick={applyForTeacherRole}
@@ -122,17 +123,23 @@ function Profile() {
               </button>
             )}
 
-          {userData?.role === "teacher" &&
-            !userData?.isAppliedForTeacherRole &&
-            userData?.isTeacher && (
+          {user?.role === "teacher" &&
+            !user?.isAppliedForTeacherRole &&
+            user?.isTeacher && (
               <p className="badge badge-dash badge-success self-center">
                 You are a Teacher Now
               </p>
             )}
 
-          {userData?.role === "teacher" &&
-            userData?.isAppliedForTeacherRole &&
-            !userData?.isTeacher && (
+          {user?._id !== profileData?._id && profileData?.isTeacher && (
+            <p className="badge badge-dash badge-success self-center">
+              Verified Teacher
+            </p>
+          )}
+
+          {user?.role === "teacher" &&
+            user?.isAppliedForTeacherRole &&
+            !user?.isTeacher && (
               <button
                 className="btn btn-warning btn-wide max-w-sm self-center w-full"
                 onClick={cancelApplicationForTeacherRole}

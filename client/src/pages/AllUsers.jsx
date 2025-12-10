@@ -1,22 +1,21 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { getLabel } from "../utils/getLabel";
-import useAllUsers from "../hooks/useAllUsers";
 import { ChevronLeft } from "lucide-react";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { serverUrl } from "../App";
 import { setAllUsers } from "../redux/adminSlice";
+import useProfileTabData from "../hooks/profile/useProfileTabData";
 
 function AllUsers() {
   const { tabKey } = useParams();
-  const { loading } = useSelector((state) => state.question);
   const { allUsers } = useSelector((state) => state.admin);
   const navigation = useNavigate();
   let tabLabel = getLabel(tabKey);
   const dispatch = useDispatch();
 
-  useAllUsers();
+  const { loading } = useProfileTabData(tabKey);
 
   const approveApplication = async (userId) => {
     try {
@@ -128,7 +127,7 @@ function AllUsers() {
               {allUsers.map((user, index) => (
                 <tr key={index}>
                   <td
-                    onClick={() => navigation(`/profile/${user?.userName}`)}
+                    onClick={() => navigation(`/profile/${user?._id}`)}
                     className="cursor-pointer"
                   >
                     {user.userName}

@@ -95,7 +95,7 @@ function Search() {
               <div
                 key={user._id}
                 className="card bg-base-200 hover:bg-base-300 cursor-pointer transition-colors"
-                onClick={() => navigate(`/profile/${user.userName}`)}
+                onClick={() => navigate(`/profile/${user._id}`)}
               >
                 <div className="card-body p-4 flex-row items-center gap-3">
                   <div className="avatar">

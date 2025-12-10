@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import uploadOnCloudinary from "../config/cloudinary.js";
 import User from "../models/user.model.js";
 
@@ -59,8 +60,9 @@ export const editProfile = async (req, res) => {
 
 export const getProfile = async (req, res) => {
   try {
-    const userName = req.params.userName;
-    const user = await User.findOne({ userName }).select("-password");
+    const { userId } = req.params;
+    const objectId = new mongoose.Types.ObjectId(userId);
+    const user = await User.findOne({ _id: objectId }).select("-password");
     if (!user) {
       return res
         .status(404)

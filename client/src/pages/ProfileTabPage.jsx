@@ -1,26 +1,16 @@
 import { useNavigate, useParams } from "react-router-dom";
-import useAskedQuestions from "../hooks/useAskedQuestions";
 import { ChevronLeft } from "lucide-react";
 import { getLabel } from "../utils/getLabel";
 import Question from "../components/Question";
-import useAnsweredQuestions from "../hooks/useAnsweredQuestions";
-import useAnswerAcceptedQuestions from "../hooks/useAnswerAcceptedQuestions";
 import { useSelector } from "react-redux";
-import useAllTeacherAnswers from "../hooks/useAllTeacherAnswers";
-import useAnswerVerifiedQuestions from "../hooks/useAnswerVerifiedQuestions";
+import useProfileTabData from "../hooks/profile/useProfileTabData";
 
 function ProfileTabPage() {
   const { userId, tabKey } = useParams();
-  const { loading } = useSelector((state) => state.question);
   const { profileData } = useSelector((state) => state.user);
   const navigation = useNavigate();
   let tabLabel = getLabel(tabKey);
-
-  useAskedQuestions(userId);
-  useAnsweredQuestions(userId);
-  useAnswerAcceptedQuestions(userId);
-  useAllTeacherAnswers(userId);
-  useAnswerVerifiedQuestions(userId);
+  const { loading } = useProfileTabData(tabKey, userId);
 
   const { questionsAsked } = useSelector((state) => state.student);
   const { questionsAnswered } = useSelector((state) => state.student);

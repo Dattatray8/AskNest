@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
 import { setUserData } from "../redux/userSlice";
 import { serverUrl } from "../App";
@@ -8,9 +8,10 @@ import { useContext } from "react";
 import SocketContext from "../context/SocketContext";
 import ThemeDropdown from "./ThemeDropdown";
 import { themeList } from "../constants/themeList";
+import useCurrentUser from "../hooks/auth/useCurrentUser";
 
 function Navbar() {
-  const { userData } = useSelector((state) => state.user);
+  const { user } = useCurrentUser();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { theme, setTheme } = useContext(SocketContext);
@@ -65,7 +66,7 @@ function Navbar() {
         </div>
 
         {/* Auth Section */}
-        {userData ? (
+        {user ? (
           <div className="dropdown dropdown-end">
             <div
               tabIndex={0}
@@ -74,7 +75,7 @@ function Navbar() {
             >
               <div className="w-10 rounded-full">
                 <img
-                  src={userData?.profileImage || userPlaceholder}
+                  src={user?.profileImage || userPlaceholder}
                   alt="User Avatar"
                 />
               </div>
@@ -85,7 +86,7 @@ function Navbar() {
               className="menu menu-sm dropdown-content bg-base-100 rounded-box mt-3 w-40 shadow"
             >
               <li className="hidden sm:block">
-                <button onClick={() => navigate(`/profile/${userData?.userName}`)}>
+                <button onClick={() => navigate(`/profile/${user?._id}`)}>
                   Profile
                 </button>
               </li>

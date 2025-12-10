@@ -20,7 +20,7 @@ userRouter.post(
   upload.single("profileImage"),
   editProfile
 );
-userRouter.get("/profile/:userName", isAuth, getProfile);
+userRouter.get("/profile/:userId", isAuth, getProfile);
 userRouter.get("/search", isGuest, search);
 userRouter.post("/applyTeacherRole", isAuth, applyForTeacherRole);
 userRouter.post("/removeTeacherApplication", isAuth, removeApplicationForTeacherRole);

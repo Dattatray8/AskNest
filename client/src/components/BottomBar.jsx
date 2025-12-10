@@ -1,8 +1,8 @@
-import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import useCurrentUser from "../hooks/auth/useCurrentUser";
 
 function BottomBar({ tabName }) {
-  const { userData } = useSelector((state) => state.user);
+  const { user } = useCurrentUser();
   const navigation = useNavigate();
   return (
     <div className="dock dock-md sm:hidden m-auto h-18">
@@ -133,7 +133,7 @@ function BottomBar({ tabName }) {
         className={tabName === "Profile" ? "dock-active" : ""}
         onClick={() => {
           userData
-            ? navigation(`/profile/${userData?.userName}`)
+            ? navigation(`/profile/${user?._id}`)
             : navigation("/login");
         }}
       >
