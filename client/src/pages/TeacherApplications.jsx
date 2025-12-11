@@ -1,18 +1,26 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { getLabel } from "../utils/getLabel";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { ChevronLeft } from "lucide-react";
 import user from "../assets/user.png";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { serverUrl } from "../App";
 import useProfileTabData from "../hooks/profile/useProfileTabData";
+import { useEffect } from "react";
+import { useSocket } from "../hooks/useSocket";
+import {
+  addApplication,
+  setTeacherApplications,
+  updateApplications,
+} from "../redux/adminSlice";
 
 function TeacherApplications() {
   const { tabKey } = useParams();
   let tabLabel = getLabel(tabKey);
   const navigation = useNavigate();
-
+  const { socket } = useSocket();
+  const dispatch = useDispatch();
   const { loading } = useProfileTabData(tabKey);
 
   const { teacherApplications } = useSelector((state) => state.admin);
@@ -26,23 +34,30 @@ function TeacherApplications() {
       );
       console.log(res);
       toast.success(res?.data?.message);
+      dispatch(updateApplications(res?.data?.user));
     } catch (error) {
       toast.error(error?.response?.data?.message || error?.message);
     }
   };
-  const removeApplication = async (userId) => {
-    try {
-      const res = await axios.post(
-        `${serverUrl}/api/v1/admin/remove/${userId}`,
-        {},
-        { withCredentials: true }
+
+  useEffect(() => {
+    socket?.on("newTeacherApplication", (application) => {
+      dispatch(addApplication(application));
+    });
+
+    return () => socket?.off("newTeacherApplication");
+  }, [socket, teacherApplications, dispatch]);
+
+  useEffect(() => {
+    socket?.on("canceledTeacherApplication", (application) => {
+      const updated = teacherApplications.filter(
+        (app) => app._id !== application._id
       );
-      console.log(res);
-      toast.success(res?.data?.message);
-    } catch (error) {
-      toast.error(error?.response?.data?.message || error?.message);
-    }
-  };
+      dispatch(setTeacherApplications(updated));
+    });
+
+    return () => socket?.off("canceledTeacherApplication");
+  }, [socket, teacherApplications, dispatch]);
 
   return (
     <div className="w-full h-full">
@@ -74,14 +89,6 @@ function TeacherApplications() {
                 />
                 <p>{application?.userName}</p>
               </div>
-              {application?.isTeacher && (
-                <button
-                  className="btn btn-danger"
-                  onClick={() => removeApplication(application?._id)}
-                >
-                  Remove
-                </button>
-              )}
               {!application?.isTeacher && (
                 <button
                   className="btn btn-success"

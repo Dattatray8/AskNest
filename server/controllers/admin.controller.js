@@ -1,5 +1,6 @@
 import Question from "../models/question.model.js";
 import User from "../models/user.model.js";
+import { io, getSocketId } from "../socket.js";
 
 export const approveTeacherApplication = async (req, res) => {
   try {
@@ -11,6 +12,11 @@ export const approveTeacherApplication = async (req, res) => {
     user.isTeacher = true;
     user.isAppliedForTeacherRole = false;
     await user.save();
+    io.to(await getSocketId(user?._id)).emit(
+      "teacherApplicationApproved",
+      user
+    );
+    io.to(await getSocketId(req.userId))
     return res
       .status(200)
       .json({ message: "Teacher role approved successfully", user });
@@ -32,6 +38,10 @@ export const disapproveTeacherApplication = async (req, res) => {
     user.isTeacher = false;
     user.isAppliedForTeacherRole = false;
     await user.save();
+    io.to(await getSocketId(user?._id)).emit(
+      "teacherApplicationDisapproved",
+      user
+    );
     return res
       .status(200)
       .json({ message: "Teacher role disapproved successfully", user });

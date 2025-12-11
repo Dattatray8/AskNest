@@ -31,7 +31,9 @@ export const SocketProvider = ({ children }) => {
       socketIo.on("getOnlineUsers", (users) => {
         setOnlineUsers(users);
       });
-      return () => socketIo.close();
+      return () => {
+        socketIo.off("getOnlineUsers");
+      };
     } else {
       if (socket) {
         socket.close();

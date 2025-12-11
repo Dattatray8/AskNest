@@ -17,10 +17,25 @@ const adminSlice = createSlice({
     setTeacherAnswers: (state, action) => {
       state.teacherAnswers = action.payload;
     },
+    addApplication: (state, action) => {
+      state.teacherApplications.push(action.payload);
+    },
+    updateApplications: (state, action) => {
+      state.teacherApplications = state.teacherApplications.filter(
+        (application) => {
+          return application._id !== action.payload._id;
+        }
+      );
+    },
   },
 });
 
-export const { setTeacherApplications, setAllUsers, setTeacherAnswers } =
-  adminSlice.actions;
+export const {
+  setTeacherApplications,
+  setAllUsers,
+  setTeacherAnswers,
+  addApplication,
+  updateApplications,
+} = adminSlice.actions;
 
 export default adminSlice.reducer;

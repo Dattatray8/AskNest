@@ -14,6 +14,7 @@ import ProfileTabs from "../components/profile/ProfileTabs";
 import ProfileSkeleton from "../components/profile/ProfileSkeleton";
 import toast from "react-hot-toast";
 import useCurrentUser from "../hooks/auth/useCurrentUser";
+import { useSocket } from "../hooks/useSocket";
 
 function Profile() {
   const { id } = useParams();
@@ -22,6 +23,7 @@ function Profile() {
   const navigation = useNavigate();
   const [load, setLoading] = useState(false);
   const { user } = useCurrentUser();
+  const { socket } = useSocket();
 
   const handleProfile = async () => {
     try {
@@ -61,13 +63,17 @@ function Profile() {
         {},
         { withCredentials: true }
       );
-      console.log(result);
       toast.success(result?.data?.message);
-      dispatch(setUserData(result?.data?.user));
     } catch (error) {
       toast.error(error?.response?.data?.message || error?.message);
     }
   };
+
+  useEffect(() => {
+    socket?.on("teacherApplicationApplied", (updatedUser) => {
+      dispatch(setUserData(updatedUser));
+    });
+  }, [socket, dispatch]);
 
   const cancelApplicationForTeacherRole = async () => {
     try {
@@ -77,12 +83,28 @@ function Profile() {
         { withCredentials: true }
       );
       toast.success(result?.data?.message);
-      console.log(result);
-      dispatch(setUserData(result?.data?.user));
     } catch (error) {
       toast.error(error?.response?.data?.message || error?.message);
     }
   };
+
+  useEffect(() => {
+    socket?.on("teacherApplicationCanceled", (updatedUser) => {
+      dispatch(setUserData(updatedUser));
+    });
+  }, [socket, dispatch]);
+
+  useEffect(() => {
+    socket?.on("teacherApplicationApproved", (updatedUser) => {
+      dispatch(setUserData(updatedUser));
+    });
+  }, [socket, dispatch]);
+
+  useEffect(() => {
+    socket?.on("teacherApplicationDisapproved", (updatedUser) => {
+      dispatch(setUserData(updatedUser));
+    });
+  }, [socket, dispatch]);
 
   return (
     <div className="w-full h-full pb-20">

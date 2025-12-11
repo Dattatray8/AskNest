@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 import uploadOnCloudinary from "../config/cloudinary.js";
 import User from "../models/user.model.js";
+import { io } from "../socket.js";
+import { getSocketId } from "../socket.js";
 
 export const getCurrentUser = async (req, res) => {
   try {
@@ -91,7 +93,9 @@ export const search = async (req, res) => {
       $and: [{ userName: { $ne: "AI" } }, { userName: { $ne: "Admin" } }],
     }).select("-password");
 
-    return res.status(200).json({ success: true, message: "Users fetched successfully", users });
+    return res
+      .status(200)
+      .json({ success: true, message: "Users fetched successfully", users });
   } catch (error) {
     return res.status(500).json({
       message: "Error in to search user",
@@ -116,9 +120,15 @@ export const applyForTeacherRole = async (req, res) => {
     }
     user.isAppliedForTeacherRole = true;
     await user.save();
+    let admin = await User.findOne({ userName: "Admin" });
+    let admin_socketId = await getSocketId(admin._id);
+    if (admin_socketId) {
+      io.to(admin_socketId).emit("newTeacherApplication", user);
+    }
+    io.to(await getSocketId(user?._id)).emit("teacherApplicationApplied", user);
     return res
       .status(200)
-      .json({ message: "Successfully applied for teacher role", user });
+      .json({ message: "Successfully applied for teacher role" });
   } catch (error) {
     return res.status(500).json({
       message: "Error applying for teacher role",
@@ -140,9 +150,17 @@ export const removeApplicationForTeacherRole = async (req, res) => {
     }
     user.isAppliedForTeacherRole = false;
     await user.save();
+    let admin = await User.findOne({ userName: "Admin" });
+    let admin_socketId = await getSocketId(admin._id);
+    if (admin_socketId) {
+      io.to(admin_socketId).emit("canceledTeacherApplication", user);
+    }
+    io.to(await getSocketId(user?._id)).emit(
+      "teacherApplicationCanceled",
+      user
+    );
     return res.status(200).json({
       message: "Successfully removed application for teacher role",
-      user,
     });
   } catch (error) {
     return res.status(500).json({
