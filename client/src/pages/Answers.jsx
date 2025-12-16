@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import useQuestion from "../hooks/useQuestion";
 import { formatTimestamp } from "../utils/formatTimeStamp";
 import user from "../assets/user.png";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import AutoExpandTextarea from "../components/AutoExpandTextArea";
 import toast from "react-hot-toast";
 import axios from "axios";
@@ -18,7 +18,25 @@ function Answers() {
   const [answer, setAnswer] = useState("");
   const [allAnswers, setAllAnswers] = useState([]);
   const { userData } = useSelector((state) => state.user);
-  const [zoomImage, setZoomImage] = useState(false);
+  const [zoomQuestionImage, setQuestionZoomImage] = useState(false);
+  const [zoomAnswerImage, setAnswerZoomImage] = useState(null);
+  const [frontendImage, setFrontendImage] = useState(null);
+  const [backendImage, setBackendImage] = useState(null);
+  const imageInput = useRef();
+  const [mediaType, setMediaType] = useState("");
+
+  const handleImage = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.type.includes("image")) {
+        setMediaType("image");
+      } else {
+        setMediaType("video");
+      }
+      setBackendImage(file);
+      setFrontendImage(URL.createObjectURL(file));
+    }
+  };
 
   const getAllAnswers = async () => {
     try {
@@ -50,9 +68,14 @@ function Answers() {
 
   const handleAddAnswer = async () => {
     try {
+      console.log(answer);
+      const formData = new FormData();
+      formData.append("answer", answer);
+      formData.append("mediaType", mediaType);
+      formData.append("media", backendImage);
       const res = await axios.post(
         `${serverUrl}/api/v1/answers/${qId}`,
-        { answer },
+        formData,
         { withCredentials: true }
       );
       toast.success(res?.data?.message);
@@ -121,7 +144,7 @@ function Answers() {
                 src={question?.media}
                 alt="selected image"
                 className="h-full w-full object-cover cursor-pointer"
-                onClick={() => setZoomImage(true)}
+                onClick={() => setQuestionZoomImage(true)}
               />
             </div>
           )}
@@ -147,14 +170,14 @@ function Answers() {
           </div>
         </div>
       )}
-      {zoomImage && (
+      {zoomQuestionImage && (
         <div
           className="fixed inset-0 bg-black/80 z-[999] flex items-center justify-center"
-          onClick={() => setZoomImage(false)}
+          onClick={() => setQuestionZoomImage(false)}
         >
           <button
             className="btn btn-circle btn-sm btn-ghost absolute top-4 right-4 z-[1000] text-white bg-black/60 hover:bg-black/80"
-            onClick={() => setZoomImage(false)}
+            onClick={() => setQuestionZoomImage(false)}
           >
             <X size={22} />
           </button>
@@ -181,7 +204,7 @@ function Answers() {
 
       {answerTabOpen && (
         <div className="w-full p-4 sm:p-8 h-[80vh] z-[100] fixed bottom-0 right-0 rounded-md overflow-y-auto">
-          <div className="flex px-2 justify-between">
+          <div className="flex p-2 justify-between">
             <button
               className="btn btn-circle"
               onClick={() => setAnswerTabOpen(false)}
@@ -200,8 +223,9 @@ function Answers() {
           <AutoExpandTextarea
             onChange={(val) => setAnswer(val)}
             answer={answer}
+            img={frontendImage}
           />
-          <div className="px-4">
+          <div className="px-4 fixed bottom-0 right-0 mb-4">
             <ul className="menu w-full menu-horizontal rounded-box">
               <li>
                 <a
@@ -221,13 +245,18 @@ function Answers() {
                   </svg>
                 </a>
               </li>
+              <input
+                type="file"
+                accept="image/*,video/*"
+                ref={imageInput}
+                hidden
+                onChange={handleImage}
+              />
               <li>
                 <a
                   className="tooltip"
                   data-tip="Media"
-                  onClick={() => {
-                    toast("🚧 Feature under development!");
-                  }}
+                  onClick={() => imageInput.current.click()}
                 >
                   <svg
                     aria-label="New gallery photo"
@@ -272,6 +301,16 @@ function Answers() {
               </div>
             )}
           </div>
+          {ans?.media && (
+            <div className="w-full h-[20vh]">
+              <img
+                src={ans.media}
+                alt="answer image"
+                className="h-full w-full object-cover cursor-pointer"
+                onClick={() => setAnswerZoomImage(ans.media)}
+              />
+            </div>
+          )}
           <p className="w-full overflow-y-auto whitespace-pre-wrap">
             {ans?.answer}
           </p>
@@ -335,6 +374,27 @@ function Answers() {
           </div>
         </div>
       ))}
+
+      {zoomAnswerImage && (
+        <div
+          className="fixed inset-0 bg-black/80 z-[999] flex items-center justify-center"
+          onClick={() => setAnswerZoomImage(null)}
+        >
+          <button
+            className="btn btn-circle btn-sm btn-ghost absolute top-4 right-4 z-[1000] text-white bg-black/60 hover:bg-black/80"
+            onClick={() => setAnswerZoomImage(null)}
+          >
+            <X size={22} />
+          </button>
+
+          <img
+            src={zoomAnswerImage}
+            alt="zoomed answer"
+            className="max-w-[90%] max-h-[90%] object-contain"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
     </div>
   );
 }

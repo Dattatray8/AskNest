@@ -1,11 +1,16 @@
 import Question from "../models/question.model.js";
 import User from "../models/user.model.js";
 import Answer from "../models/answer.model.js";
+import uploadOnCloudinary from "../config/cloudinary.js";
 
 export const answer = async (req, res) => {
   try {
-    const { answer } = req.body;
+    const { answer, mediaType } = req.body;
     const { questionId } = req.params;
+    let media;
+    if (req.file) {
+      media = await uploadOnCloudinary(req.file.path);
+    }
     let question = await Question.findById(questionId).populate("user");
     if (!question) {
       return res.status(404).json({ message: "Question not found" });
@@ -24,6 +29,8 @@ export const answer = async (req, res) => {
       answer,
       user: req.userId,
       question: questionId,
+      media: media || null,
+      mediaType: mediaType || null,
     });
     question.answers.push(newAnswer?._id);
     user.solved.push(newAnswer?._id);
