@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import user from "../assets/user.png";
 import { formatTimestamp } from "../utils/formatTimeStamp";
 import { useNavigate } from "react-router-dom";
-import { Volume2 } from "lucide-react";
+import { Volume2, X } from "lucide-react";
 import { speakText } from "../utils/speakText";
 
 function ReceiverMessage({ message }) {
@@ -57,13 +57,21 @@ function ReceiverMessage({ message }) {
 
       {zoomImage && (
         <div
-          className="fixed inset-0 z-50 bg-black/80 flex justify-center items-center"
+          className="fixed inset-0 bg-black/80 z-[999] flex items-center justify-center"
           onClick={() => setZoomImage(false)}
         >
+          <button
+            className="btn btn-circle btn-sm btn-ghost absolute top-4 right-4 z-[1000] text-white bg-black/60 hover:bg-black/80"
+            onClick={() => setZoomImage(false)}
+          >
+            <X size={22} />
+          </button>
+
           <img
             src={message?.media}
             alt="zoomed"
-            className="max-w-[90%] max-h-[90%] object-contain rounded-lg shadow-lg"
+            className="max-w-[90%] max-h-[90%] object-contain"
+            onClick={(e) => e.stopPropagation()}
           />
         </div>
       )}

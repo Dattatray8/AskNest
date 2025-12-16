@@ -1,15 +1,19 @@
 import { useNavigate } from "react-router-dom";
 import { topHighlights, heroCards } from "../constants/heroFeatures";
-import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
+import handleFeedNavigation from "../utils/handleFeedNavigation";
+import handleChatNavigation from "../utils/handleChatNavigation";
+import SocketContext from "../context/SocketContext";
+import useCurrentUser from "../hooks/auth/useCurrentUser";
+import { useContext } from "react";
 
 function Hero() {
+  const { user } = useCurrentUser();
   const navigate = useNavigate();
-  const { userData } = useSelector((state) => state.user);
+  let { setIsLoginned } = useContext(SocketContext);
 
   return (
     <div className="min-h-screen bg-base-200 mt-16">
-
       {/* Hero Section */}
       <div className="hero min-h-[70vh] bg-gradient-to-br from-primary/10 via-base-200 to-secondary/10">
         <div className="hero-content text-center">
@@ -28,7 +32,13 @@ function Hero() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button
                 className="btn btn-primary btn-lg"
-                onClick={() => navigate("/chat")}
+                onClick={() =>
+                  handleChatNavigation({
+                    user: user?._id,
+                    setIsLoginned,
+                    navigate,
+                  })
+                }
               >
                 <span className="flex items-center gap-2">
                   <svg className="w-5 h-5" />
@@ -38,7 +48,13 @@ function Hero() {
 
               <button
                 className="btn btn-outline btn-lg"
-                onClick={() => navigate("/feed")}
+                onClick={() =>
+                  handleFeedNavigation({
+                    user: user?._id,
+                    setIsLoginned,
+                    navigate,
+                  })
+                }
               >
                 Explore Feed
               </button>
@@ -53,13 +69,14 @@ function Hero() {
                 >
                   <Icon className={`w-8 h-8 ${color}`} />
                   <div className="text-left">
-                    <div className="text-sm text-base-content/60">{subtitle}</div>
+                    <div className="text-sm text-base-content/60">
+                      {subtitle}
+                    </div>
                     <div className="font-bold text-lg">{title}</div>
                   </div>
                 </div>
               ))}
             </div>
-
           </div>
         </div>
       </div>
@@ -92,7 +109,6 @@ function Hero() {
               </div>
             ))}
           </div>
-
         </div>
       </div>
 
@@ -108,17 +124,15 @@ function Hero() {
           <button
             className="btn btn-lg bg-base-100 text-primary hover:bg-base-200"
             onClick={() => {
-              if (!userData) return navigate("/login");
+              if (!user) return navigate("/login");
               toast.success("Welcome back! You are already logged in");
               navigate("/feed");
             }}
-
           >
             Get Started Now
           </button>
         </div>
       </div>
-
     </div>
   );
 }

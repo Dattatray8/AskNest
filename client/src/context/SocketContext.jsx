@@ -11,6 +11,7 @@ export default SocketContext;
 
 export const SocketProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
+  const [isLoginned, setIsLoginned] = useState(true);
   const [onlineUsers, setOnlineUsers] = useState([]);
   const { userData } = useSelector((state) => state.user);
   const [theme, setTheme] = useState(() => {
@@ -47,6 +48,8 @@ export const SocketProvider = ({ children }) => {
     socket,
     theme,
     setTheme,
+    isLoginned,
+    setIsLoginned,
   };
   return (
     <SocketContext.Provider value={value}>{children}</SocketContext.Provider>

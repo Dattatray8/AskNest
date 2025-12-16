@@ -1,14 +1,20 @@
 import { useNavigate } from "react-router-dom";
 import useCurrentUser from "../hooks/auth/useCurrentUser";
+import SocketContext from "../context/SocketContext";
+import { useContext } from "react";
+import handleChatNavigation from "../utils/handleChatNavigation";
+import handleFeedNavigation from "../utils/handleFeedNavigation";
 
 function BottomBar({ tabName }) {
   const { user } = useCurrentUser();
-  const navigation = useNavigate();
+  const navigate = useNavigate();
+  let { setIsLoginned } = useContext(SocketContext);
+
   return (
     <div className="dock dock-md sm:hidden m-auto h-18">
       <button
         className={tabName === "Home" ? "dock-active" : ""}
-        onClick={() => navigation("/")}
+        onClick={() => navigate("/")}
       >
         <svg
           className="size-[1.2em]"
@@ -45,7 +51,7 @@ function BottomBar({ tabName }) {
 
       <button
         className={tabName === "Search" ? "dock-active" : ""}
-        onClick={() => navigation("/search")}
+        onClick={() => navigate("/search")}
       >
         <svg
           className="size-[1.2em]"
@@ -74,7 +80,13 @@ function BottomBar({ tabName }) {
 
       <button
         className={tabName === "Chat" ? "dock-active" : ""}
-        onClick={() => navigation("/chat")}
+        onClick={() =>
+          handleChatNavigation({
+            user: user?._id,
+            setIsLoginned,
+            navigate,
+          })
+        }
       >
         <svg
           className="size-[1.2em]"
@@ -99,7 +111,13 @@ function BottomBar({ tabName }) {
 
       <button
         className={tabName === "Feed" ? "dock-active" : ""}
-        onClick={() => navigation("/feed")}
+        onClick={() =>
+          handleFeedNavigation({
+            user: user?._id,
+            setIsLoginned,
+            navigate,
+          })
+        }
       >
         <svg
           className="size-[1.2em]"
@@ -132,9 +150,7 @@ function BottomBar({ tabName }) {
       <button
         className={tabName === "Profile" ? "dock-active" : ""}
         onClick={() => {
-          userData
-            ? navigation(`/profile/${user?._id}`)
-            : navigation("/login");
+          user ? navigate(`/profile/${user?._id}`) : navigate("/login");
         }}
       >
         <svg

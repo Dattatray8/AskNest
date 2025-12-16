@@ -3,9 +3,13 @@ import BottomBar from "../components/BottomBar";
 import useCurrentUser from "../hooks/useCurrentUser";
 import Hero from "../components/Hero";
 import Footer from "../components/Footer";
+import LoginMessage from "../components/LoginMessage";
+import { useContext } from "react";
+import SocketContext from "../context/SocketContext";
 
 function Home() {
   const { loading } = useCurrentUser();
+  const { isLoginned } = useContext(SocketContext);
   return (
     <div className="relative">
       {loading && (
@@ -41,6 +45,7 @@ function Home() {
           <Hero />
           <Footer />
           <BottomBar tabName={"Home"} />
+          {!isLoginned && <LoginMessage />}
         </div>
       )}
     </div>

@@ -9,12 +9,15 @@ import SocketContext from "../context/SocketContext";
 import ThemeDropdown from "./ThemeDropdown";
 import { themeList } from "../constants/themeList";
 import useCurrentUser from "../hooks/auth/useCurrentUser";
+import handleChatNavigation from "../utils/handleChatNavigation";
+import handleFeedNavigation from "../utils/handleFeedNavigation";
 
 function Navbar() {
   const { user } = useCurrentUser();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { theme, setTheme } = useContext(SocketContext);
+  let { setIsLoginned } = useContext(SocketContext);
 
   const handleLogOut = async () => {
     try {
@@ -41,28 +44,75 @@ function Navbar() {
       {/* Desktop Navigation */}
       <div className="hidden sm:flex gap-4">
         <ul className="menu menu-horizontal gap-4">
-          <li><button onClick={() => navigate("/search")}>Search</button></li>
-          <li><button onClick={() => navigate("/chat")}>Chat</button></li>
-          <li><button onClick={() => navigate("/feed")}>Feed</button></li>
-
           <li>
-            <details>
-              <summary>🎨 {theme}</summary>
-              <ThemeDropdown themeList={themeList} setTheme={setTheme} />
-            </details>
+            <button onClick={() => navigate("/search")}>Search</button>
+          </li>
+          <li>
+            <button
+              onClick={() =>
+                handleChatNavigation({
+                  user: user?._id,
+                  setIsLoginned,
+                  navigate,
+                })
+              }
+            >
+              Chat
+            </button>
+          </li>
+          <li>
+            <button
+              onClick={() =>
+                handleFeedNavigation({
+                  user: user?._id,
+                  setIsLoginned,
+                  navigate,
+                })
+              }
+            >
+              Feed
+            </button>
+          </li>
+
+          <li className="relative">
+            <div className="dropdown dropdown-center">
+              <label
+                tabIndex={0}
+                className="cursor-pointer flex items-center gap-2"
+              >
+                <span
+                  className="w-10 h-5 border rounded"
+                  style={{ backgroundColor: theme.color }}
+                />
+              </label>
+
+              <div tabIndex={0} className="dropdown-content z-[60] mt-3">
+                <ThemeDropdown themeList={themeList} setTheme={setTheme} />
+              </div>
+            </div>
           </li>
         </ul>
       </div>
 
       {/* Right: User or Login */}
       <div className="flex items-center gap-4">
-
         {/* Mobile Theme Dropdown */}
-        <div className="sm:hidden">
-          <details>
-            <summary>🎨 {theme}</summary>
-            <ThemeDropdown themeList={themeList} setTheme={setTheme} />
-          </details>
+        <div className="sm:hidden flex items-center">
+          <div className="dropdown dropdown-center">
+            <label
+              tabIndex={0}
+              className="cursor-pointer flex items-center gap-2"
+            >
+              <span
+                className="w-10 h-5 border rounded"
+                style={{ backgroundColor: theme.color }}
+              />
+            </label>
+
+            <div tabIndex={0} className="dropdown-content z-[60] mt-3">
+              <ThemeDropdown themeList={themeList} setTheme={setTheme} />
+            </div>
+          </div>
         </div>
 
         {/* Auth Section */}
@@ -91,7 +141,9 @@ function Navbar() {
                 </button>
               </li>
 
-              <li><button onClick={handleLogOut}>Logout</button></li>
+              <li>
+                <button onClick={handleLogOut}>Logout</button>
+              </li>
             </ul>
           </div>
         ) : (
