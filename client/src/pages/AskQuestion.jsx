@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { serverUrl } from "../App";
@@ -25,13 +25,33 @@ function AskQuestion() {
     setQuestion(speakedText);
   };
 
+  const [frontendImage, setFrontendImage] = useState(null);
+  const [backendImage, setBackendImage] = useState(null);
+  const imageInput = useRef();
+  const [mediaType, setMediaType] = useState("");
+
+  const handleImage = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.type.includes("image")) {
+        setMediaType("image");
+      } else {
+        setMediaType("video");
+      }
+      setBackendImage(file);
+      setFrontendImage(URL.createObjectURL(file));
+    }
+  };
+
   const handleAskQuestion = async () => {
     try {
-      const res = await axios.post(
-        `${serverUrl}/api/v1/questions`,
-        { question },
-        { withCredentials: true }
-      );
+      const formData = new FormData();
+      formData.append("question", question);
+      formData.append("mediaType", mediaType);
+      formData.append("media", backendImage);
+      const res = await axios.post(`${serverUrl}/api/v1/questions`, formData, {
+        withCredentials: true,
+      });
       dispatch(setQuestions([...questions, res?.data?.populatedQuestion]));
       toast.success(res?.data?.message);
       navigation("/feed");
@@ -55,14 +75,15 @@ function AskQuestion() {
           Ask it
         </button>
       </div>
-      <div className="h-[45vh] p-4">
+      <div className="p-4 ov">
         <AutoExpandTextarea
           question={question}
           placeholder="Write your question..."
           onChange={(val) => setQuestion(val)}
+          img={frontendImage}
         />
       </div>
-      <div className="px-4">
+      <div className="px-4 fixed bottom-0 right-0 mb-4">
         <ul className="menu w-full menu-horizontal rounded-box">
           <li>
             <a
@@ -82,13 +103,18 @@ function AskQuestion() {
               </svg>
             </a>
           </li>
+          <input
+            type="file"
+            accept="image/*,video/*"
+            ref={imageInput}
+            hidden
+            onChange={handleImage}
+          />
           <li>
             <a
               className="tooltip"
               data-tip="Media"
-              onClick={() => {
-                toast("🚧 Feature under development!");
-              }}
+              onClick={() => imageInput.current.click()}
             >
               <svg
                 aria-label="New gallery photo"

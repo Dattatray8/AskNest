@@ -1,13 +1,20 @@
+import uploadOnCloudinary from "../config/cloudinary.js";
 import Answer from "../models/answer.model.js";
 import Question from "../models/question.model.js";
 import User from "../models/user.model.js";
 
 export const askQuestion = async (req, res) => {
   try {
-    const { question } = req.body;
+    const { question, mediaType } = req.body;
+    let media;
+    if (req.file) {
+      media = await uploadOnCloudinary(req.file.path);
+    }
     const newQuestion = await Question.create({
       question,
       user: req.userId,
+      mediaType: mediaType || null,
+      media: media || null,
     });
     const user = await User.findById(req.userId).populate("asked");
     user.asked.push(newQuestion?._id);

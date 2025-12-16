@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { formatTimestamp } from "../utils/formatTimeStamp";
 import user from "../assets/user.png";
 import { useSelector } from "react-redux";
+import { Image } from "lucide-react";
 
 function Question({ q }) {
   const { userData } = useSelector((state) => state.user);
@@ -22,6 +23,12 @@ function Question({ q }) {
         <div className="w-full">
           <p className="text line-clamp-2 whitespace-pre-wrap">{q?.question}</p>
         </div>
+        {q?.media && (
+          <div className="flex items-center gap-2 text-base-content/70">
+            <Image size={18} />
+            <span className="text-sm">Media</span>
+          </div>
+        )}
         {userData?._id !== q?.user?._id && !q?.stopAnswering && (
           <div className="flex items-center justify-end w-full">
             <button className="btn btn-sm btn-primary">Answer</button>

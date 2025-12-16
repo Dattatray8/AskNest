@@ -1,4 +1,4 @@
-import { Check, ChevronLeft, MoreVertical } from "lucide-react";
+import { Check, ChevronLeft, MoreVertical, X } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import useQuestion from "../hooks/useQuestion";
 import { formatTimestamp } from "../utils/formatTimeStamp";
@@ -18,6 +18,7 @@ function Answers() {
   const [answer, setAnswer] = useState("");
   const [allAnswers, setAllAnswers] = useState([]);
   const { userData } = useSelector((state) => state.user);
+  const [zoomImage, setZoomImage] = useState(false);
 
   const getAllAnswers = async () => {
     try {
@@ -114,6 +115,16 @@ function Answers() {
             answerTabOpen ? "opacity-50" : "opacity-100"
           }`}
         >
+          {question?.media && (
+            <div className="w-full h-[20vh]">
+              <img
+                src={question?.media}
+                alt="selected image"
+                className="h-full w-full object-cover cursor-pointer"
+                onClick={() => setZoomImage(true)}
+              />
+            </div>
+          )}
           <p className="w-full max-h-[30vh] overflow-y-auto whitespace-pre-wrap">
             {question?.question}
           </p>
@@ -136,7 +147,26 @@ function Answers() {
           </div>
         </div>
       )}
+      {zoomImage && (
+        <div
+          className="fixed inset-0 bg-black/80 z-[999] flex items-center justify-center"
+          onClick={() => setZoomImage(false)}
+        >
+          <button
+            className="btn btn-circle btn-sm btn-ghost absolute top-4 right-4 z-[1000] text-white bg-black/60 hover:bg-black/80"
+            onClick={() => setZoomImage(false)}
+          >
+            <X size={22} />
+          </button>
 
+          <img
+            src={question?.media}
+            alt="zoomed"
+            className="max-w-[90%] max-h-[90%] object-contain"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
       {userData?._id !== question?.user?._id && !question?.stopAnswering && (
         <div
           className={`w-full p-4 fixed bottom-0 ${
