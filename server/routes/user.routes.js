@@ -14,7 +14,7 @@ import isGuest from "../middlewares/isGuest.js";
 const userRouter = express(Router());
 
 userRouter.get("/getcurrentuser", isAuth, getCurrentUser);
-userRouter.post(
+userRouter.put(
   "/editProfile",
   isAuth,
   upload.single("profileImage"),

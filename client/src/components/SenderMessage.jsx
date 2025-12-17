@@ -1,16 +1,20 @@
 import { useEffect, useRef, useState } from "react";
-import user from "../assets/user.png";
+import userImg from "../assets/user.png";
 import { formatTimestamp } from "../utils/formatTimeStamp";
 import { useNavigate } from "react-router-dom";
-import { CheckCircle, Copy, Volume2, X } from "lucide-react";
+import { CheckCircle, Copy, MoreHorizontal, Volume2, X } from "lucide-react";
 import { speakText } from "../utils/speakText";
 import VideoPlayer from "./VideoPlayer";
+import useCurrentUser from "../hooks/auth/useCurrentUser";
 
 function SenderMessage({ message }) {
   const sender = useRef();
   const navigate = useNavigate();
   const [zoomImage, setZoomImage] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [showReportInBox, setShowReportInBox] = useState(false);
+  const reportDialogRef = useRef(null);
+  const { user } = useCurrentUser();
 
   useEffect(() => {
     sender.current.scrollIntoView({ behavior: "smooth" });
@@ -27,12 +31,18 @@ function SenderMessage({ message }) {
     }
   };
 
+  useEffect(() => {
+    if (showReportInBox && reportDialogRef.current) {
+      reportDialogRef.current.showModal();
+    }
+  }, [showReportInBox]);
+
   return (
     <div className="w-[90%] self-end sm:pr-4 pr-2 mt-3" ref={sender}>
       <div className="chat chat-end">
         <div className="flex gap-3 py-1 items-center">
           <div className="chat-header">{message?.sender?.userName}</div>
-          <div>
+          <div className="flex items-center">
             <button
               onClick={() => speakText(message?.message)}
               className="btn btn-circle w-5 h-5 btn-outline"
@@ -45,20 +55,61 @@ function SenderMessage({ message }) {
               title="Copy response"
             >
               {copied ? (
-                <CheckCircle className="w-3 h-3 text-green-500" />
+                <CheckCircle className="w-4 h-4 text-green-500" />
               ) : (
-                <Copy className="w-3 h-3" />
+                <Copy className="w-4 h-4" />
               )}
             </button>
+            {user?.userName !== "Admin" && (
+              <details className="dropdown dropdown-end">
+                <summary className="btn btn-circle w-6 h-6">
+                  <MoreHorizontal size={15} />
+                </summary>
+                <ul className="menu dropdown-content">
+                  <li
+                    className="cursor-pointer btn"
+                    onClick={() => {
+                      setShowReportInBox(true);
+                    }}
+                  >
+                    Report
+                  </li>
+                </ul>
+              </details>
+            )}
           </div>
         </div>
+        {showReportInBox && (
+          <div>
+            <dialog ref={reportDialogRef} id="my_modal_1" className="modal">
+              <div className="modal-box">
+                <h3 className="font-bold text-lg">Give Report Reason</h3>
+                <input
+                  type="text"
+                  placeholder="Report Reason"
+                  className="input my-4"
+                />
+                <div className="modal-action">
+                  <form method="dialog">
+                    <button
+                      className="btn"
+                      onClick={() => setShowReportInBox(false)}
+                    >
+                      Close
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </dialog>
+          </div>
+        )}
         <div className="chat-image avatar">
           <div className="w-8 h-8 rounded-full">
             <img
               alt="Tailwind CSS chat bubble component"
               className="cursor-pointer"
               onClick={() => navigate(`/profile/${message?.sender?.userName}`)}
-              src={message?.sender?.profileImage || user}
+              src={message?.sender?.profileImage || userImg}
             />
           </div>
         </div>
@@ -72,7 +123,7 @@ function SenderMessage({ message }) {
                 onClick={() => setZoomImage(true)}
               />
             ) : (
-              <VideoPlayer video={message.media}/>
+              <VideoPlayer video={message.media} />
             ))}
           <p className="m-1">{message?.message}</p>
         </div>

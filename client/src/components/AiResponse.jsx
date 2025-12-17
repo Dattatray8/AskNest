@@ -143,9 +143,9 @@ function AiResponse({ message }) {
             title="Copy response"
           >
             {copied ? (
-              <CheckCircle className="w-3 h-3 text-green-500" />
+              <CheckCircle className="w-4 h-4 text-green-500" />
             ) : (
-              <Copy className="w-3 h-3" />
+              <Copy className="w-4 h-4" />
             )}
           </button>
           <button

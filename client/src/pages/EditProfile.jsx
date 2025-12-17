@@ -57,7 +57,7 @@ function EditProfile() {
       } else {
         formData.append("profileImage", userData.profileImage);
       }
-      let res = await axios.post(
+      let res = await axios.put(
         `${serverUrl}/api/v1/users/editProfile`,
         formData,
         {
@@ -67,7 +67,7 @@ function EditProfile() {
       setLoading(false);
       dispatch(setUserData(res?.data?.user));
       dispatch(setProfileData(res?.data?.user));
-      navigation(`/profile/${res?.data?.user.userName}`);
+      navigation(`/profile/${res?.data?.user._id}`);
     } catch (error) {
       console.log(error);
       setLoading(false);
