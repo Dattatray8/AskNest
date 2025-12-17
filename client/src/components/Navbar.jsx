@@ -86,7 +86,7 @@ function Navbar() {
                 />
               </label>
 
-              <div tabIndex={0} className="dropdown-content z-[60] mt-3">
+              <div tabIndex={0} className="dropdown-content z-60 mt-3">
                 <ThemeDropdown themeList={themeList} setTheme={setTheme} />
               </div>
             </div>
@@ -109,7 +109,7 @@ function Navbar() {
               />
             </label>
 
-            <div tabIndex={0} className="dropdown-content z-[60] mt-3">
+            <div tabIndex={0} className="dropdown-content z-60 mt-3">
               <ThemeDropdown themeList={themeList} setTheme={setTheme} />
             </div>
           </div>

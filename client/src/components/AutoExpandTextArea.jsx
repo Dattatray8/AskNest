@@ -1,7 +1,15 @@
 import { X } from "lucide-react";
 import { useState } from "react";
+import VideoPlayer from "./VideoPlayer";
 
-function AutoExpandTextarea({ placeholder, onChange, question, answer, img }) {
+function AutoExpandTextarea({
+  placeholder,
+  onChange,
+  question,
+  answer,
+  img,
+  mediaType,
+}) {
   const [value, setValue] = useState("");
   const [zoomImage, setZoomImage] = useState(false);
 
@@ -14,7 +22,7 @@ function AutoExpandTextarea({ placeholder, onChange, question, answer, img }) {
 
   return (
     <div>
-      {img && (
+      {img && mediaType === "image" && (
         <div className="w-full h-[20vh]">
           <img
             src={img}
@@ -24,13 +32,14 @@ function AutoExpandTextarea({ placeholder, onChange, question, answer, img }) {
           />
         </div>
       )}
+      {img && mediaType === "video" && <VideoPlayer video={img} />}
       {zoomImage && (
         <div
-          className="fixed inset-0 bg-black/80 z-[999] flex items-center justify-center"
+          className="fixed inset-0 bg-black/80 z-999 flex items-center justify-center"
           onClick={() => setZoomImage(false)}
         >
           <button
-            className="btn btn-circle btn-sm btn-ghost absolute top-4 right-4 z-[1000] text-white bg-black/60 hover:bg-black/80"
+            className="btn btn-circle btn-sm btn-ghost absolute top-4 right-4 z-1000 text-white bg-black/60 hover:bg-black/80"
             onClick={() => setZoomImage(false)}
           >
             <X size={22} />

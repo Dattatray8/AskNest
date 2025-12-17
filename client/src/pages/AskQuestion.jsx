@@ -81,6 +81,7 @@ function AskQuestion() {
           placeholder="Write your question..."
           onChange={(val) => setQuestion(val)}
           img={frontendImage}
+          mediaType={mediaType}
         />
       </div>
       <div className="px-4 fixed bottom-0 right-0 mb-4">

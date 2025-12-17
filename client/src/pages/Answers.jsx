@@ -1,4 +1,12 @@
-import { Check, ChevronLeft, MoreVertical, X } from "lucide-react";
+import {
+  Check,
+  CheckCircle,
+  ChevronLeft,
+  Copy,
+  MoreVertical,
+  Volume2,
+  X,
+} from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import useQuestion from "../hooks/useQuestion";
 import { formatTimestamp } from "../utils/formatTimeStamp";
@@ -9,6 +17,8 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import { serverUrl } from "../App";
 import { useSelector } from "react-redux";
+import { speakText } from "../utils/speakText";
+import VideoPlayer from "../components/VideoPlayer";
 
 function Answers() {
   const navigation = useNavigate();
@@ -24,6 +34,18 @@ function Answers() {
   const [backendImage, setBackendImage] = useState(null);
   const imageInput = useRef();
   const [mediaType, setMediaType] = useState("");
+  const [copied, setCopied] = useState(false);
+
+  const copyToClipboard = async (text) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      toast.err("Failed to copy text: ", err);
+      console.error("Failed to copy text: ", err);
+    }
+  };
 
   const handleImage = (e) => {
     const file = e.target.files[0];
@@ -138,7 +160,7 @@ function Answers() {
             answerTabOpen ? "opacity-50" : "opacity-100"
           }`}
         >
-          {question?.media && (
+          {question?.media && question?.mediaType === "image" && (
             <div className="w-full h-[20vh]">
               <img
                 src={question?.media}
@@ -148,9 +170,31 @@ function Answers() {
               />
             </div>
           )}
+          {question?.media && question?.mediaType === "video" && (
+            <VideoPlayer video={question?.media} />
+          )}
           <p className="w-full max-h-[30vh] overflow-y-auto whitespace-pre-wrap">
             {question?.question}
           </p>
+          <div className="flex items-center justify-end gap-1">
+            <button
+              onClick={() => speakText(question?.question)}
+              className="btn btn-circle w-5 h-5 btn-outline"
+            >
+              <Volume2 className="w-3 h-3" />
+            </button>
+            <button
+              onClick={() => copyToClipboard(question?.question)}
+              className="btn btn-ghost btn-xs opacity-60 hover:opacity-100 transition-opacity"
+              title="Copy response"
+            >
+              {copied ? (
+                <CheckCircle className="w-3 h-3 text-green-500" />
+              ) : (
+                <Copy className="w-3 h-3" />
+              )}
+            </button>
+          </div>
           <div className="avatar flex items-center gap-4 cursor-pointer">
             <div
               className="w-8 h-8 rounded-full"
@@ -172,11 +216,11 @@ function Answers() {
       )}
       {zoomQuestionImage && (
         <div
-          className="fixed inset-0 bg-black/80 z-[999] flex items-center justify-center"
+          className="fixed inset-0 bg-black/80 z-999 flex items-center justify-center"
           onClick={() => setQuestionZoomImage(false)}
         >
           <button
-            className="btn btn-circle btn-sm btn-ghost absolute top-4 right-4 z-[1000] text-white bg-black/60 hover:bg-black/80"
+            className="btn btn-circle btn-sm btn-ghost absolute top-4 right-4 z-1000 text-white bg-black/60 hover:bg-black/80"
             onClick={() => setQuestionZoomImage(false)}
           >
             <X size={22} />
@@ -203,7 +247,7 @@ function Answers() {
       )}
 
       {answerTabOpen && (
-        <div className="w-full p-4 sm:p-8 h-[80vh] z-[100] fixed bottom-0 right-0 rounded-md overflow-y-auto">
+        <div className="w-full p-4 sm:p-8 h-[80vh] z-100 fixed bottom-0 right-0 rounded-md overflow-y-auto">
           <div className="flex p-2 justify-between">
             <button
               className="btn btn-circle"
@@ -224,6 +268,7 @@ function Answers() {
             onChange={(val) => setAnswer(val)}
             answer={answer}
             img={frontendImage}
+            mediaType={mediaType}
           />
           <div className="px-4 fixed bottom-0 right-0 mb-4">
             <ul className="menu w-full menu-horizontal rounded-box">
@@ -301,7 +346,7 @@ function Answers() {
               </div>
             )}
           </div>
-          {ans?.media && (
+          {ans?.media && ans?.mediaType === "image" && (
             <div className="w-full h-[20vh]">
               <img
                 src={ans.media}
@@ -311,9 +356,31 @@ function Answers() {
               />
             </div>
           )}
+          {ans?.media && ans?.mediaType === "video" && (
+            <VideoPlayer video={ans?.media} />
+          )}
           <p className="w-full overflow-y-auto whitespace-pre-wrap">
             {ans?.answer}
           </p>
+          <div className="flex items-center justify-end gap-1">
+            <button
+              onClick={() => speakText(ans?.answer)}
+              className="btn btn-circle w-5 h-5 btn-outline"
+            >
+              <Volume2 className="w-3 h-3" />
+            </button>
+            <button
+              onClick={() => copyToClipboard(ans?.answer)}
+              className="btn btn-ghost btn-xs opacity-60 hover:opacity-100 transition-opacity"
+              title="Copy response"
+            >
+              {copied ? (
+                <CheckCircle className="w-3 h-3 text-green-500" />
+              ) : (
+                <Copy className="w-3 h-3" />
+              )}
+            </button>
+          </div>
           <div className="avatar flex items-center gap-4 cursor-pointer">
             <div
               className="w-8 h-8 rounded-full"
@@ -377,11 +444,11 @@ function Answers() {
 
       {zoomAnswerImage && (
         <div
-          className="fixed inset-0 bg-black/80 z-[999] flex items-center justify-center"
+          className="fixed inset-0 bg-black/80 z-999 flex items-center justify-center"
           onClick={() => setAnswerZoomImage(null)}
         >
           <button
-            className="btn btn-circle btn-sm btn-ghost absolute top-4 right-4 z-[1000] text-white bg-black/60 hover:bg-black/80"
+            className="btn btn-circle btn-sm btn-ghost absolute top-4 right-4 z-1000 text-white bg-black/60 hover:bg-black/80"
             onClick={() => setAnswerZoomImage(null)}
           >
             <X size={22} />

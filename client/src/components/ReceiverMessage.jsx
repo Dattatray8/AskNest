@@ -2,17 +2,30 @@ import { useEffect, useRef, useState } from "react";
 import user from "../assets/user.png";
 import { formatTimestamp } from "../utils/formatTimeStamp";
 import { useNavigate } from "react-router-dom";
-import { Volume2, X } from "lucide-react";
+import { CheckCircle, Copy, Volume2, X } from "lucide-react";
 import { speakText } from "../utils/speakText";
+import VideoPlayer from "./VideoPlayer";
 
 function ReceiverMessage({ message }) {
   const sender = useRef();
   const navigate = useNavigate();
   const [zoomImage, setZoomImage] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     sender.current.scrollIntoView({ behavior: "smooth" });
   }, [message?.message]);
+
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(message?.message);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      toast.err("Failed to copy text: ", err);
+      console.error("Failed to copy text: ", err);
+    }
+  };
 
   return (
     <div className="w-[90%] self-start sm:pl-4 pl-2" ref={sender}>
@@ -27,14 +40,27 @@ function ReceiverMessage({ message }) {
             />
           </div>
         </div>
-        <div className="flex gap-3 py-1">
+        <div className="flex gap-3 py-1 items-center">
           <div className="chat-header">{message?.sender?.userName}</div>
-          <button
-            onClick={() => speakText(message?.message)}
-            className="btn btn-circle w-5 h-5 btn-outline"
-          >
-            <Volume2 className="w-3 h-3" />
-          </button>
+          <div>
+            <button
+              onClick={() => speakText(message?.message)}
+              className="btn btn-circle w-5 h-5 btn-outline"
+            >
+              <Volume2 className="w-3 h-3" />
+            </button>
+            <button
+              onClick={copyToClipboard}
+              className="btn btn-ghost btn-xs opacity-60 hover:opacity-100 transition-opacity"
+              title="Copy response"
+            >
+              {copied ? (
+                <CheckCircle className="w-3 h-3 text-green-500" />
+              ) : (
+                <Copy className="w-3 h-3" />
+              )}
+            </button>
+          </div>
         </div>
         <div className="chat-bubble flex flex-col">
           {message?.media &&
@@ -42,11 +68,11 @@ function ReceiverMessage({ message }) {
               <img
                 src={message?.media}
                 alt="media"
-                className="w-[200px] cursor-pointer"
+                className="w-50 cursor-pointer"
                 onClick={() => setZoomImage(true)}
               />
             ) : (
-              <video src={message?.media} controls className="w-[200px]" />
+              <VideoPlayer video={message?.media}/>
             ))}
           <p className="m-1">{message?.message}</p>
         </div>
@@ -57,11 +83,11 @@ function ReceiverMessage({ message }) {
 
       {zoomImage && (
         <div
-          className="fixed inset-0 bg-black/80 z-[999] flex items-center justify-center"
+          className="fixed inset-0 bg-black/80 z-999 flex items-center justify-center"
           onClick={() => setZoomImage(false)}
         >
           <button
-            className="btn btn-circle btn-sm btn-ghost absolute top-4 right-4 z-[1000] text-white bg-black/60 hover:bg-black/80"
+            className="btn btn-circle btn-sm btn-ghost absolute top-4 right-4 z-1000 text-white bg-black/60 hover:bg-black/80"
             onClick={() => setZoomImage(false)}
           >
             <X size={22} />

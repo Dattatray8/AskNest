@@ -5,6 +5,7 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { formatTimestamp } from "../utils/formatTimeStamp";
 import { speakText } from "../utils/speakText";
+import toast from "react-hot-toast";
 
 function AiResponse({ message }) {
   const sender = useRef();
@@ -20,6 +21,7 @@ function AiResponse({ message }) {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
+      toast.err("Failed to copy text: ", err);
       console.error("Failed to copy text: ", err);
     }
   };
@@ -33,7 +35,7 @@ function AiResponse({ message }) {
             style={oneDark}
             language={match[1]}
             PreTag="div"
-            className="!m-0 !p-2 sm:!p-4 rounded-lg text-sm overflow-x-auto"
+            className="m-0! p-2! sm:p-4! rounded-lg text-sm overflow-x-auto"
             {...props}
           >
             {String(children).replace(/\n$/, "")}

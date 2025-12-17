@@ -12,6 +12,7 @@ import { useSocket } from "../hooks/useSocket";
 import { useContext } from "react";
 import SocketContext from "../context/SocketContext";
 import AiResponse from "../components/AiResponse";
+import VideoPlayer from "../components/VideoPlayer";
 
 function Chat() {
   const navigation = useNavigate();
@@ -109,7 +110,7 @@ function Chat() {
 
   return (
     <div className="w-full h-full flex flex-col relative overflow-x-hidden">
-      <div className="h-20 shadow-md flex items-center fixed top-0 right-0 left-0 z-[100] bg-base-100 backdrop-blur-sm border-t border-base-300">
+      <div className="h-20 shadow-md flex items-center fixed top-0 right-0 left-0 z-100 bg-base-100 backdrop-blur-sm border-t border-base-300">
         <ChevronLeft
           size={28}
           className="cursor-pointer mx-4"
@@ -152,8 +153,8 @@ function Chat() {
           onChange={(e) => setMessage(e.target.value)}
         />
         {frontendImage && (
-          <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-40 w-11/12 sm:w-[400px] bg-base-200 rounded-2xl p-3 shadow-lg border border-base-300">
-            <div className="relative">
+          <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-40 w-11/12 sm:w-100 bg-base-200 rounded-2xl p-3 shadow-lg border border-base-300">
+            <div className="relative flex flex-col items-center">
               {mediaType === "image" ? (
                 <img
                   src={frontendImage}
@@ -161,11 +162,7 @@ function Chat() {
                   className="w-full h-64 object-cover rounded-xl"
                 />
               ) : (
-                <video
-                  src={frontendImage}
-                  controls
-                  className="w-full h-64 object-cover rounded-xl"
-                />
+                <VideoPlayer video={frontendImage} />
               )}
               <button
                 type="button"
@@ -194,7 +191,7 @@ function Chat() {
           hidden
           onChange={handleImage}
         />
-        <div className="fab fab-flower absolute right-17 sm:right-[30vw] md:right-[29vw] lg:right-[28vw] lg:mr- xl:right-[27.25vw] z-[100]">
+        <div className="fab fab-flower absolute right-17 sm:right-[30vw] md:right-[29vw] lg:right-[28vw] lg:mr- xl:right-[27.25vw] z-100">
           <div tabIndex={0} role="button" className="btn btn-circle btn-lg">
             <svg
               aria-label="New"
