@@ -63,8 +63,7 @@ export const editProfile = async (req, res) => {
 export const getProfile = async (req, res) => {
   try {
     const { userId } = req.params;
-    const objectId = new mongoose.Types.ObjectId(userId);
-    const user = await User.findOne({ _id: objectId }).select("-password");
+    const user = await User.findOne({ _id: userId }).select("-password");
     if (!user) {
       return res
         .status(404)
@@ -121,7 +120,7 @@ export const applyForTeacherRole = async (req, res) => {
     user.isAppliedForTeacherRole = true;
     await user.save();
     let admin = await User.findOne({ userName: "Admin" });
-    let admin_socketId = await getSocketId(admin._id);
+    let admin_socketId = getSocketId(admin._id);
     if (admin_socketId) {
       io.to(admin_socketId).emit("newTeacherApplication", user);
     }
@@ -151,7 +150,7 @@ export const removeApplicationForTeacherRole = async (req, res) => {
     user.isAppliedForTeacherRole = false;
     await user.save();
     let admin = await User.findOne({ userName: "Admin" });
-    let admin_socketId = await getSocketId(admin._id);
+    let admin_socketId = getSocketId(admin._id);
     if (admin_socketId) {
       io.to(admin_socketId).emit("canceledTeacherApplication", user);
     }

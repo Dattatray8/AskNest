@@ -1,6 +1,10 @@
-import Question from "../models/question.model.js";
+import Report from "../models/report.model.js";
 import User from "../models/user.model.js";
+import Message from "../models/message.model.js";
+import Chat from "../models/chat.model.js";
 import { io, getSocketId } from "../socket.js";
+import Question from "../models/question.model.js";
+import Answer from "../models/answer.model.js";
 
 export const approveTeacherApplication = async (req, res) => {
   try {
@@ -16,7 +20,7 @@ export const approveTeacherApplication = async (req, res) => {
       "teacherApplicationApproved",
       user
     );
-    io.to(await getSocketId(req.userId))
+    io.to(getSocketId(req.userId));
     return res
       .status(200)
       .json({ message: "Teacher role approved successfully", user });
@@ -38,10 +42,7 @@ export const disapproveTeacherApplication = async (req, res) => {
     user.isTeacher = false;
     user.isAppliedForTeacherRole = false;
     await user.save();
-    io.to(await getSocketId(user?._id)).emit(
-      "teacherApplicationDisapproved",
-      user
-    );
+    io.to(getSocketId(user?._id)).emit("teacherApplicationDisapproved", user);
     return res
       .status(200)
       .json({ message: "Teacher role disapproved successfully", user });
@@ -115,6 +116,85 @@ export const getCustomUsers = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       message: "Error fetching users",
+      error: error.message,
+    });
+  }
+};
+
+export const actionOnSpam = async (req, res) => {
+  try {
+    const { reportId } = req.body;
+    if (!reportId) {
+      return res
+        .status(400)
+        .json({ success: false, message: "ReportId is required" });
+    }
+    let report = await Report.findById(reportId);
+    if (!report) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Report not found" });
+    }
+    if (report.contentType === "Message") {
+      await Message.findByIdAndDelete(report.contentId);
+      await Chat.updateMany({}, { $pull: { messages: report.contentId } });
+    } else if (report.contentType === "Question") {
+      let content = await Question.findById(report.contentId);
+      if (!content) {
+        return res
+          .status(404)
+          .json({ success: false, message: "Content not found" });
+      }
+      await User.findByIdAndUpdate(content.user, {
+        $pull: { asked: content._id },
+      });
+      await Answer.deleteMany({ question: report.contentId });
+      await Question.findByIdAndDelete(content._id);
+    } else if (report.contentType === "Answer") {
+      let content = await Answer.findById(report.contentId);
+      if (!content) {
+        return res
+          .status(404)
+          .json({ success: false, message: "Content not found" });
+      }
+      await User.findByIdAndUpdate(content.user, {
+        $pull: { solved: content.question },
+      });
+      await Question.updateOne(
+        { _id: content.question },
+        { $pull: { answers: content._id } }
+      );
+      await Answer.findByIdAndDelete(content._id);
+    }
+    if (report.reportedUser) {
+      await User.findByIdAndUpdate(report.reportedUser, {
+        $inc: { spamMarkCount: 1 },
+      });
+    }
+    await Report.deleteOne({ _id: report._id });
+    return res.status(200).json({
+      success: true,
+      message: "Spam handled and cleaned up successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Error fetching spams",
+      error: error.message,
+    });
+  }
+};
+
+export const allSpam = async (req, res) => {
+  try {
+    let reports = await Report.find({ sentToAdmin: true })
+      .populate("contentId")
+      .sort({ createdAt: -1 });
+    return res
+      .status(200)
+      .json({ success: true, message: "Report fetched Successfully", reports });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Error fetching spams",
       error: error.message,
     });
   }

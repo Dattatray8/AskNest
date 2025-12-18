@@ -1,5 +1,6 @@
 import Answer from "../models/answer.model.js";
 import Question from "../models/question.model.js";
+import Report from "../models/report.model.js";
 import User from "../models/user.model.js";
 
 export const getAllAnswers = async (req, res) => {
@@ -74,6 +75,67 @@ export const verifyAnswer = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       message: "Error verifying answer",
+      error: error.message,
+    });
+  }
+};
+
+export const approveReport = async (req, res) => {
+  try {
+    const { reportId } = req.body;
+    let report = await Report.findById(reportId).populate("contentId");
+    if (!report) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Report not found" });
+    }
+    if (report.sentToAdmin) {
+      return res.status(200).json({ message: "Already sent to admin" });
+    }
+    if (report.contentId) {
+      report.contentId.isSpam = true;
+      await report.contentId.save();
+    }
+    report.sentToAdmin = true;
+    await report.save();
+    return res
+      .status(200)
+      .json({ success: true, message: "Report sent to admin successully" });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Error approve report",
+      error: error.message,
+    });
+  }
+};
+
+export const removeReport = async (req, res) => {
+  try {
+    const { reportId } = req.body;
+    let report = await Report.findById(reportId).select(
+      "sentToAdmin reportingUser"
+    );
+    if (!report) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Report not found" });
+    }
+    let reportingUser = await User.findById(report.reportingUser).select(
+      "spamMarkCount"
+    );
+    if (reportingUser) {
+      reportingUser.spamMarkCount = (reportingUser.spamMarkCount || 0) + 1;
+      await reportingUser.save();
+    }
+    if (!report.sentToAdmin) {
+      await Report.deleteOne({ _id: report?._id });
+    }
+    return res
+      .status(200)
+      .json({ success: true, message: "Report remove successfully" });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Error remove report",
       error: error.message,
     });
   }
