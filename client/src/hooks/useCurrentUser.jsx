@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { serverUrl } from "../App";
 import { setUserData } from "../redux/userSlice";
 
-function useCurrentUser() {
+export const useCurrentUserHook = () => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   useEffect(() => {
@@ -27,6 +27,4 @@ function useCurrentUser() {
     fetchUser();
   }, [dispatch]);
   return { loading };
-}
-
-export default useCurrentUser;
+};

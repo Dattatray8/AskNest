@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { useCurrentUserHook } from "../useCurrentUser";
 
 /**
  * useCurrentUser
@@ -9,6 +10,7 @@ import { useSelector } from "react-redux";
  */
 
 export default function useCurrentUser() {
+    useCurrentUserHook();
     const userFromStore = useSelector((state) => state.user?.userData);
     const [user, setUser] = useState(null);
     const [checking, setChecking] = useState(true);

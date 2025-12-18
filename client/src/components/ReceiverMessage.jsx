@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import user from "../assets/user.png";
+import userImg from "../assets/user.png";
 import { formatTimestamp } from "../utils/formatTimeStamp";
 import { useNavigate } from "react-router-dom";
 import { CheckCircle, Copy, MoreHorizontal, Volume2, X } from "lucide-react";
@@ -46,7 +46,7 @@ function ReceiverMessage({ message }) {
               alt="Tailwind CSS chat bubble component"
               className="cursor-pointer"
               onClick={() => navigate(`/profile/${message?.sender?.userName}`)}
-              src={message?.sender?.profileImage || user}
+              src={message?.sender?.profileImage || userImg}
             />
           </div>
         </div>
@@ -105,7 +105,7 @@ function ReceiverMessage({ message }) {
                       className="btn"
                       onClick={() => setShowReportInBox(false)}
                     >
-                      Close
+                      Send Report
                     </button>
                   </form>
                 </div>

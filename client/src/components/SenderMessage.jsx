@@ -95,7 +95,7 @@ function SenderMessage({ message }) {
                       className="btn"
                       onClick={() => setShowReportInBox(false)}
                     >
-                      Close
+                      Send Report
                     </button>
                   </form>
                 </div>

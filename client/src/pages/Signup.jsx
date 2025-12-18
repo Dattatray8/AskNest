@@ -46,7 +46,7 @@ function Signup() {
   };
 
   return (
-    <div className="flex justify-center items-center h-[100vh] w-full">
+    <div className="flex justify-center items-center h-screen w-full">
       <div className="card w-96 bg-base-100 shadow-md">
         <div className="card-body">
           <div className="text-center text-2xl font-semibold mb-4">
