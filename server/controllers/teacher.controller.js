@@ -111,7 +111,7 @@ export const approveReport = async (req, res) => {
 
 export const removeReport = async (req, res) => {
   try {
-    const { reportId } = req.body;
+    const { reportId } = req.params;
     let report = await Report.findById(reportId).select(
       "sentToAdmin reportingUser"
     );

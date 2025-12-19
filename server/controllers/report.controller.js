@@ -1,5 +1,5 @@
 import Report from "../models/report.model.js";
-import { getSocketId, io } from "../socket.js";
+import { io } from "../socket.js";
 
 export const createReport = async (req, res) => {
   try {
@@ -23,19 +23,11 @@ export const createReport = async (req, res) => {
       reason,
       contentType,
     });
-    // notify reporting user
-    let userSocketId = getSocketId(req.userId);
-    if (userSocketId) {
-      io.to(userSocketId).emit("reportCreation", {
-        success: true,
-        message: "Report sent successfully",
-      });
-    }
     // notify all verified teachers
     io.to("verified-teachers").emit("newReport", report);
     return res
       .status(201)
-      .json({ success: true, message: "Report Created Successfully" });
+      .json({ success: true, message: "Report Sent Successfully" });
   } catch (error) {
     return res
       .status(500)

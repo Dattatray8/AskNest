@@ -24,6 +24,10 @@ function ProfileTabs({ role, roleTabs, userId }) {
               navigate(`/${tab.key}`);
             } else if (tab.key === "all" || tab.key === "unanswered") {
               navigate(`/questions/${tab.key}`);
+            } else if (tab.key === "reports") {
+              navigate("/reports");
+            } else if (tab.key === "spams") {
+              navigate("/spams");
             } else {
               navigate(`/profile/${userId}/${tab.key}`);
             }

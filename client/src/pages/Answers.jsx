@@ -21,6 +21,7 @@ import { useSelector } from "react-redux";
 import { speakText } from "../utils/speakText";
 import VideoPlayer from "../components/VideoPlayer";
 import useCurrentUser from "../hooks/auth/useCurrentUser";
+import { useSendReport } from "../hooks/useSendReport";
 
 function Answers() {
   const navigation = useNavigate();
@@ -40,6 +41,8 @@ function Answers() {
   const [showReportInBox, setShowReportInBox] = useState(false);
   const reportDialogRef = useRef(null);
   const { user } = useCurrentUser();
+  const [reason, setReason] = useState("");
+  let { load, sendReport } = useSendReport();
 
   const copyToClipboard = async (text) => {
     try {
@@ -222,7 +225,7 @@ function Answers() {
                 </ul>
               </details>
             )}
-          </div> 
+          </div>
           {showReportInBox && (
             <div>
               <dialog ref={reportDialogRef} id="my_modal_1" className="modal">
@@ -232,12 +235,25 @@ function Answers() {
                     type="text"
                     placeholder="Report Reason"
                     className="input my-4"
+                    value={reason}
+                    onChange={(e) => {
+                      setReason(e.target.value);
+                    }}
                   />
                   <div className="modal-action">
                     <form method="dialog">
                       <button
                         className="btn"
-                        onClick={() => setShowReportInBox(false)}
+                        disabled={load}
+                        onClick={async () => {
+                          setShowReportInBox(false);
+                          sendReport(
+                            reason,
+                            question?.user?._id,
+                            question?._id,
+                            "Question"
+                          );
+                        }}
                       >
                         Send Report
                       </button>
@@ -462,12 +478,25 @@ function Answers() {
                     type="text"
                     placeholder="Report Reason"
                     className="input my-4"
+                    value={reason}
+                    onChange={(e) => {
+                      setReason(e.target.value);
+                    }}
                   />
                   <div className="modal-action">
                     <form method="dialog">
                       <button
                         className="btn"
-                        onClick={() => setShowReportInBox(false)}
+                        disabled={load}
+                        onClick={async () => {
+                          setShowReportInBox(false);
+                          await sendReport(
+                            reason,
+                            ans?.user?._id,
+                            ans?._id,
+                            "Answer"
+                          );
+                        }}
                       >
                         Send Report
                       </button>

@@ -145,7 +145,7 @@ function Profile() {
               </button>
             )}
 
-          {user?.role === "teacher" &&
+          {user?.role === "teacher" || profileData?.role === "teacher" &&
             !user?.isAppliedForTeacherRole &&
             user?.isTeacher && (
               <p className="badge badge-dash badge-success self-center">

@@ -28,6 +28,11 @@ function Chat() {
   const [frontendImage, setFrontendImage] = useState(null);
   const [backendImage, setBackendImage] = useState(null);
   const imageInput = useRef();
+  const sendMessageRef = useRef();
+
+  useEffect(() => {
+    sendMessageRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
+  }, []);
 
   const handleImage = (e) => {
     const file = e.target.files[0];
@@ -144,6 +149,7 @@ function Chat() {
       <form
         className="flex justify-center items-center h-20 fixed bottom-0 left-0 right-0 w-full px-2 gap-3 bg-base-100 backdrop-blur-sm border-t border-base-300 z-50"
         onSubmit={sendMessage}
+        ref={sendMessageRef}
       >
         <input
           type="text"

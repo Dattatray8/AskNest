@@ -13,6 +13,8 @@ import ProfileTabPage from "../pages/ProfileTabPage";
 import TeacherApplications from "../pages/TeacherApplications";
 import AllUsers from "../pages/AllUsers";
 import FilteredQuestions from "../pages/FilteredQuestions";
+import Reports from "../pages/Reports";
+import Spams from "../pages/Spams";
 
 function AppRoutes() {
   return (
@@ -29,6 +31,8 @@ function AppRoutes() {
       <Route path="/search" element={<Search />} />
       <Route path="/profile/:userId/:tabKey" element={<ProfileTabPage />} />
       <Route path="/users/:tabKey" element={<TeacherApplications />} />
+      <Route path="/reports" element={<Reports />} />
+      <Route path="/spams" element={<Spams />} />
       <Route path="/:tabKey" element={<AllUsers />} />
       <Route path="/questions/:tabKey" element={<FilteredQuestions />} />
     </Routes>

@@ -13,6 +13,7 @@ import studentRouter from "./routes/student.routes.js";
 import adminRouter from "./routes/admin.routes.js";
 import teacherRouter from "./routes/teacher.routes.js";
 import rateLimit from "express-rate-limit";
+import reportRouter from "./routes/report.routes.js";
 
 dotenv.config();
 
@@ -25,14 +26,14 @@ app.use(
 
 const globalRateLimiter = rateLimit({
   windowMs: 10 * 60 * 1000,
-  max: 200,
+  max: 300,
   standardHeaders: true,
   legacyHeaders: false,
   message: {
     success: false,
     message: "Too many requests, please try again later.",
-  }
-})
+  },
+});
 
 app.use(globalRateLimiter);
 
@@ -46,6 +47,7 @@ app.use("/api/v1/answers", answerRouter);
 app.use("/api/v1/student", studentRouter);
 app.use("/api/v1/admin", adminRouter);
 app.use("/api/v1/teacher", teacherRouter);
+app.use("/api/v1/report", reportRouter);
 
 server.listen(process.env.PORT, () => {
   dbConnection();
