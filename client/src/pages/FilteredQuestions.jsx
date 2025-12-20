@@ -37,7 +37,7 @@ function FilteredQuestions() {
 
   useEffect(() => {
     getFilteredQuestions(tabKey);
-  }, []);
+  }, [tabKey]);
   return (
     <div className="w-full h-full">
       <div className="h-16 shadow-md flex items-center px-2 sm:px-4">

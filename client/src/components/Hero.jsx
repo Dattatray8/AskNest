@@ -15,7 +15,7 @@ function Hero() {
   return (
     <div className="min-h-screen bg-base-200 mt-16">
       {/* Hero Section */}
-      <div className="hero min-h-[70vh] bg-gradient-to-br from-primary/10 via-base-200 to-secondary/10">
+      <div className="hero min-h-[70vh] bg-linear-to-br from-primary/10 via-base-200 to-secondary/10">
         <div className="hero-content text-center">
           <div className="max-w-3xl">
             <h1 className="text-5xl md:text-6xl font-bold mb-6">
@@ -113,7 +113,7 @@ function Hero() {
       </div>
 
       {/* CTA Section */}
-      <div className="bg-gradient-to-r from-primary to-secondary py-16">
+      <div className="bg-linear-to-r from-primary to-secondary py-16">
         <div className="max-w-4xl mx-auto text-center px-4">
           <h2 className="text-4xl font-bold text-primary-content mb-4">
             Ready to Transform Your Learning?
