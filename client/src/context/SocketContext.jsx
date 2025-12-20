@@ -22,7 +22,7 @@ export const SocketProvider = ({ children }) => {
   }, [theme]);
 
   useEffect(() => {
-    if (userData) {
+    if (userData?._id) {
       const socketIo = io(serverUrl, {
         query: {
           userId: userData?._id,
@@ -34,6 +34,8 @@ export const SocketProvider = ({ children }) => {
       });
       return () => {
         socketIo.off("getOnlineUsers");
+        socketIo.close();
+        setSocket(null);
       };
     } else {
       if (socket) {
@@ -41,7 +43,7 @@ export const SocketProvider = ({ children }) => {
         setSocket(null);
       }
     }
-  }, [userData]);
+  }, [userData?._id]);
 
   const value = {
     onlineUsers,
