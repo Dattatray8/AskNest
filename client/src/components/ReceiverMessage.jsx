@@ -1,24 +1,38 @@
 import { useEffect, useRef, useState } from "react";
 import userImg from "../assets/user.png";
 import { formatTimestamp } from "../utils/formatTimeStamp";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { CheckCircle, Copy, MoreHorizontal, Volume2, X } from "lucide-react";
 import { speakText } from "../utils/speakText";
 import VideoPlayer from "./VideoPlayer";
 import useCurrentUser from "../hooks/auth/useCurrentUser";
+import toast from "react-hot-toast";
+import { useSendReport } from "../hooks/useSendReport";
 
 function ReceiverMessage({ message }) {
   const sender = useRef();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const messageId = searchParams.get('messageId');
   const [zoomImage, setZoomImage] = useState(false);
   const [copied, setCopied] = useState(false);
   const [showReportInBox, setShowReportInBox] = useState(false);
   const reportDialogRef = useRef(null);
   const { user } = useCurrentUser();
+  const [reason, setReason] = useState("");
+  let { loading, sendReport } = useSendReport();
+
+  const isHighlighted = message?._id === messageId;
 
   useEffect(() => {
-    sender.current.scrollIntoView({ behavior: "smooth" });
-  }, [message?.message]);
+    if (isHighlighted && sender.current) {
+      setTimeout(() => {
+        sender.current.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 500);
+    } else {
+      sender.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [message?.message, isHighlighted]);
 
   const copyToClipboard = async () => {
     try {
@@ -38,7 +52,12 @@ function ReceiverMessage({ message }) {
   }, [showReportInBox]);
 
   return (
-    <div className="w-[90%] self-start sm:pl-4 pl-2" ref={sender}>
+    <div 
+      className={`w-[90%] self-start sm:pl-4 pl-2 transition-all duration-300 ${
+        isHighlighted ? 'ring-4 ring-warning rounded-lg p-2 bg-warning/10' : ''
+      }`} 
+      ref={sender}
+    >
       <div className="chat chat-start">
         <div className="chat-image avatar">
           <div className="w-8 h-8 rounded-full">
@@ -98,12 +117,25 @@ function ReceiverMessage({ message }) {
                   type="text"
                   placeholder="Report Reason"
                   className="input my-4"
+                  value={reason}
+                  onChange={(e) => {
+                    setReason(e.target.value);
+                  }}
                 />
                 <div className="modal-action">
                   <form method="dialog">
                     <button
                       className="btn"
-                      onClick={() => setShowReportInBox(false)}
+                      disabled={loading}
+                      onClick={async () => {
+                        setShowReportInBox(false);
+                        await sendReport(
+                          reason,
+                          message?.sender?._id,
+                          message?._id,
+                          "Message"
+                        );
+                      }}
                     >
                       Send Report
                     </button>

@@ -23,8 +23,12 @@ export const createReport = async (req, res) => {
       reason,
       contentType,
     });
+    const populatedReport = await Report.findById(report._id)
+      .populate("contentId")
+      .populate("reportingUser", "profileImage userName")
+      .populate("reportedUser", "profileImage userName");
     // notify all verified teachers
-    io.to("verified-teachers").emit("newReport", report);
+    io.to("verified-teachers").emit("newReport", populatedReport);
     return res
       .status(201)
       .json({ success: true, message: "Report Sent Successfully" });

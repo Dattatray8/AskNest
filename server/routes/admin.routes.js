@@ -28,7 +28,7 @@ adminRouter.post(
 adminRouter.get("/applications", isAuth, isAdmin, getAllTeacherApplications);
 adminRouter.get("/users", isAuth, isAdmin, getAllUsers);
 adminRouter.post("/users/:usersType", isAuth, isAdmin, getCustomUsers);
-adminRouter.delete("/spam", isAuth, isAdmin, actionOnSpam);
+adminRouter.delete("/spam/:reportId", isAuth, isAdmin, actionOnSpam);
 adminRouter.get("/spam", isAuth, isAdmin, allSpam);
 
 export default adminRouter;

@@ -123,7 +123,7 @@ export const getCustomUsers = async (req, res) => {
 
 export const actionOnSpam = async (req, res) => {
   try {
-    const { reportId } = req.body;
+    const { reportId } = req.params;
     if (!reportId) {
       return res
         .status(400)
@@ -188,6 +188,8 @@ export const allSpam = async (req, res) => {
   try {
     let reports = await Report.find({ sentToAdmin: true })
       .populate("contentId")
+      .populate("reportedUser", "userName profileImage")
+      .populate("reportingUser", "userName profileImage")
       .sort({ createdAt: -1 });
     return res
       .status(200)
