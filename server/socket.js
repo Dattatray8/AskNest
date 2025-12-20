@@ -9,7 +9,10 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: "https://querysphere.vercel.app",
+    origin: [
+      "https://querysphere.vercel.app",
+      "https://query-sphere.onrender.com",
+    ],
     methods: ["GET", "POST"],
   },
 });
