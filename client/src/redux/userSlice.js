@@ -5,6 +5,7 @@ const userSlice = createSlice({
   initialState: {
     userData: null,
     profileData: null,
+    verifiedEmail: null,
   },
   reducers: {
     setUserData: (state, action) => {
@@ -13,9 +14,13 @@ const userSlice = createSlice({
     setProfileData: (state, action) => {
       state.profileData = action.payload;
     },
+    setVerifiedEmail: (state, action) => {
+      state.verifiedEmail = action.payload;
+    },
   },
 });
 
-export const { setUserData, setProfileData } = userSlice.actions;
+export const { setUserData, setProfileData, setVerifiedEmail } =
+  userSlice.actions;
 
 export default userSlice.reducer;

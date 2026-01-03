@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import User from "../models/user.model.js";
 import { generateToken } from "../config/token.js";
 import sendMail from "../config/mail.js";
+import client from "../config/redis.js";
 
 export const signup = async (req, res) => {
   try {
@@ -115,12 +116,10 @@ export const sendOtp = async (req, res) => {
     user.forgotPassword.isOtpVerified = false;
     await user.save();
     await sendMail(email, otp);
-    return res
-      .status(200)
-      .json({
-        success: true,
-        message: "OTP sent successfully on Email, It May be in spam",
-      });
+    return res.status(200).json({
+      success: true,
+      message: "OTP sent successfully on Email, It May be in spam",
+    });
   } catch (error) {
     return res.status(500).json({
       success: false,
@@ -175,6 +174,52 @@ export const resetPassword = async (req, res) => {
     return res
       .status(200)
       .json({ success: true, message: "Password reset successfully" });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to Reset Password",
+      error: error.message,
+    });
+  }
+};
+
+export const sendOtpForEmailVerification = async (req, res) => {
+  try {
+    let { email } = req.body;
+    const otp = Math.floor(1000 * Math.random() * 9000).toString();
+    const hashOtp = await bcrypt.hash(otp, 10);
+    await client.set(`otp: ${email}`, hashOtp, { EX: 300 });
+    await sendMail(email, otp);
+    return res.status(200).json({
+      success: true,
+      message: "OTP sent successfully on Email, It May be in spam",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to Reset Password",
+      error: error.message,
+    });
+  }
+};
+
+export const verifyOtpForEmailVerification = async (req, res) => {
+  try {
+    const { email, otp } = req.body;
+    const hashOtp = await client.get(`otp: ${email}`);
+    if (!hashOtp) {
+      return res
+        .status(400)
+        .json({ success: false, message: "OTP expired, Please resend OTP" });
+    }
+    const isValidOtp = await bcrypt.compare(otp, hashOtp);
+    if (!isValidOtp) {
+      return res.status(400).json({ success: false, message: "Invalid OTP" });
+    }
+    await client.del(`otp: ${email}`);
+    return res
+      .status(200)
+      .json({ success: true, message: "Email verified successfully" });
   } catch (error) {
     return res.status(500).json({
       success: false,

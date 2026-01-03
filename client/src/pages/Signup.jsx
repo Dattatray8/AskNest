@@ -1,24 +1,31 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { serverUrl } from "../App";
 import { Eye, EyeOff } from "lucide-react";
 import toast from "react-hot-toast";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setUserData } from "../redux/userSlice";
 import { useNavigate } from "react-router-dom";
 
 function Signup() {
   const [loading, setLoading] = useState(false);
+  const { verifiedEmail } = useSelector((state) => state.user);
   const [formValue, setFormValue] = useState({
     role: "",
     userName: "",
-    email: "",
+    email: verifiedEmail,
     password: "",
   });
 
   const [showPassword, setShowPassword] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (verifiedEmail === null) {
+      navigate("/email-verification");
+    }
+  }, [verifiedEmail]);
 
   const handleSignup = async () => {
     for (let key in formValue) {
@@ -138,11 +145,10 @@ function Signup() {
               <input
                 type="email"
                 id="email"
+                disabled={verifiedEmail}
+                defaultValue={verifiedEmail}
                 placeholder="mail@site.com"
                 required
-                onChange={(e) =>
-                  setFormValue({ ...formValue, email: e.target.value })
-                }
               />
             </label>
             <div className="validator-hint hidden text-start pl-2">
