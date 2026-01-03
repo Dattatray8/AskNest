@@ -27,6 +27,21 @@ function Signup() {
         return;
       }
     }
+    const username = document.getElementById("username");
+    const email = document.getElementById("email");
+    const password = document.getElementById("password");
+    if (!username.checkValidity()) {
+      username.reportValidity();
+      return;
+    }
+    if (!email.checkValidity()) {
+      email.reportValidity();
+      return;
+    }
+    if (!password.checkValidity()) {
+      password.reportValidity();
+      return;
+    }
     try {
       setLoading(true);
       const res = await axios.post(
@@ -85,6 +100,7 @@ function Signup() {
               </svg>
               <input
                 type="text"
+                id="username"
                 required
                 placeholder="Username"
                 pattern="[A-Za-z][A-Za-z0-9\-]*"
@@ -121,6 +137,7 @@ function Signup() {
               </svg>
               <input
                 type="email"
+                id="email"
                 placeholder="mail@site.com"
                 required
                 onChange={(e) =>
@@ -158,10 +175,11 @@ function Signup() {
               <input
                 type={showPassword ? "text" : "password"}
                 required
+                id="password"
                 placeholder="Password"
                 minLength="6"
                 pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}"
-                title="Must be more than 8 characters, including number, lowercase letter, uppercase letter"
+                title="Must be more than 5 characters, including number, lowercase letter, uppercase letter"
                 onChange={(e) =>
                   setFormValue({ ...formValue, password: e.target.value })
                 }

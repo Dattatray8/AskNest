@@ -117,7 +117,10 @@ export const sendOtp = async (req, res) => {
     await sendMail(email, otp);
     return res
       .status(200)
-      .json({ success: true, message: "Email sent successfully" });
+      .json({
+        success: true,
+        message: "OTP sent successfully on Email, It May be in spam",
+      });
   } catch (error) {
     return res.status(500).json({
       success: false,
