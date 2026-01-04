@@ -10,6 +10,7 @@ function Spams() {
   let [spamLoading, setSpamLoading] = useState(false);
   let [deleteBtnLoading, setDeleteBtnLoading] = useState(false);
   const navigation = useNavigate();
+  let [removeSpamId, setRemoveSpamId] = useState(null);
 
   const getSpams = async () => {
     try {
@@ -47,6 +48,7 @@ function Spams() {
 
   const actionOnSpam = async (id) => {
     try {
+      setRemoveSpamId(id);
       setDeleteBtnLoading(true);
       const res = await api.delete(`/api/v1/admin/spam/${id}`, {
         withCredentials: true,
@@ -166,7 +168,7 @@ function Spams() {
                     className="btn btn-error btn-sm gap-2"
                     onClick={() => actionOnSpam(spam?._id)}
                   >
-                    {deleteBtnLoading ? (
+                    {deleteBtnLoading && removeSpamId === spam?._id ? (
                       <span className="loading loading-spinner loading-sm"></span>
                     ) : (
                       "Delete Content"

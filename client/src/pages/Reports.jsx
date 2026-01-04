@@ -14,6 +14,8 @@ function Reports() {
   let [removeReportLoading, setRemoveReportLoading] = useState(false);
   const navigation = useNavigate();
   const { socket } = useSocket();
+  let [approveReportId, setApproveReportId] = useState(null);
+  let [removeReportId, setRemoveReportId] = useState(null);
 
   const getReports = async () => {
     try {
@@ -50,6 +52,7 @@ function Reports() {
 
   const approveReport = async (reportId) => {
     try {
+      setApproveReportId(reportId);
       setApproveReportLoading(true);
       const res = await api.post(
         "/api/v1/teacher/report",
@@ -71,6 +74,7 @@ function Reports() {
 
   const removeReport = async (reportId) => {
     try {
+      setRemoveReportId(reportId);
       setRemoveReportLoading(true);
       const res = await api.delete(`/api/v1/teacher/report/${reportId}`, {
         withCredentials: true,
@@ -203,7 +207,7 @@ function Reports() {
                     className="btn btn-error btn-sm gap-2"
                     onClick={() => removeReport(report?._id)}
                   >
-                    {removeReportLoading ? (
+                    {removeReportLoading && removeReportId === report?._id ? (
                       <span className="loading loading-spinner loading-sm"></span>
                     ) : (
                       "Remove Report"
@@ -213,7 +217,7 @@ function Reports() {
                     className="btn btn-success btn-sm gap-2"
                     onClick={() => approveReport(report?._id)}
                   >
-                    {approveReportLoading ? (
+                    {approveReportLoading && approveReportId === report?._id ? (
                       <span className="loading loading-spinner loading-sm"></span>
                     ) : (
                       "Approve"

@@ -201,3 +201,77 @@ export const allSpam = async (req, res) => {
     });
   }
 };
+
+export const banUser = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    let user = await User.findById(userId).select("-password");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    let duration;
+    if (user.spamMarkCount > 25) {
+      duration = 7 * 24 * 60 * 60 * 1000;
+    } else if (user.spamMarkCount > 10) {
+      duration = 24 * 60 * 60 * 1000;
+    }
+    if (duration) {
+      user.isBanned = true;
+      user.banDuration = new Date(Date.now() + duration);
+      await user.save();
+      setTimeout(async () => {
+        try {
+          let updatedUser = await User.findById(userId).select("-password");
+          if (
+            updatedUser &&
+            updatedUser.isBanned &&
+            updatedUser.banDuration <= Date.now()
+          ) {
+            updatedUser.isBanned = false;
+            updatedUser.banDuration = null;
+            await updatedUser.save();
+          }
+        } catch (error) {
+          console.error("Error unbanning user:", error);
+        }
+      }, duration);
+      return res
+        .status(200)
+        .json({ message: "User banned successfully", user });
+    } else {
+      return res.status(400).json({
+        message: "Spam mark count is not high enough to ban the user.",
+      });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      message: "Error banning user",
+      error: error.message,
+    });
+  }
+};
+
+export const unbanUser = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    let user = await User.findById(userId).select("-password");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    if (!user.isBanned) {
+      return res.status(400).json({ message: "User is not banned" });
+    }
+    user.isBanned = false;
+    user.banDuration = null;
+    user.spamMarkCount = 0;
+    await user.save();
+    return res
+      .status(200)
+      .json({ message: "User unbanned successfully", user });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Error unbanning user",
+      error: error.message,
+    });
+  }
+};

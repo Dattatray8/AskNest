@@ -197,7 +197,7 @@ export const sendOtpForEmailVerification = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: "Failed to Reset Password",
+      message: "Failed to send OTP for Email Verification",
       error: error.message,
     });
   }
@@ -223,7 +223,7 @@ export const verifyOtpForEmailVerification = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: "Failed to Reset Password",
+      message: "Failed to verify OTP for Email Verification",
       error: error.message,
     });
   }
