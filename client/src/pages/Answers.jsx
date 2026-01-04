@@ -22,6 +22,7 @@ import { speakText } from "../utils/speakText";
 import VideoPlayer from "../components/VideoPlayer";
 import useCurrentUser from "../hooks/auth/useCurrentUser";
 import { useSendReport } from "../hooks/useSendReport";
+import BannedMessage from "../components/BannedMessage";
 
 function Answers() {
   const navigation = useNavigate();
@@ -311,12 +312,21 @@ function Answers() {
             answerTabOpen ? "hidden" : "block"
           }`}
         >
-          <button className="btn w-full" onClick={() => setAnswerTabOpen(true)}>
+          <button
+            className="btn w-full"
+            onClick={() => {
+              if (user?.isBanned) {
+                document.getElementById("my_modal_1").showModal();
+                return;
+              }
+              setAnswerTabOpen(true);
+            }}
+          >
             Answer
           </button>
         </div>
       )}
-
+      <BannedMessage />
       {answerTabOpen && (
         <div className="w-full p-4 sm:p-8 h-[80vh] z-100 fixed bottom-0 right-0 rounded-md overflow-y-auto">
           <div className="flex p-2 justify-between">

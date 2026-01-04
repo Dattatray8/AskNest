@@ -13,6 +13,8 @@ import { useContext } from "react";
 import SocketContext from "../context/SocketContext";
 import AiResponse from "../components/AiResponse";
 import VideoPlayer from "../components/VideoPlayer";
+import useCurrentUser from "../hooks/auth/useCurrentUser";
+import BannedMessage from "../components/BannedMessage";
 
 function Chat() {
   const navigation = useNavigate();
@@ -29,6 +31,7 @@ function Chat() {
   const [backendImage, setBackendImage] = useState(null);
   const imageInput = useRef();
   const sendMessageRef = useRef();
+  const { user } = useCurrentUser();
 
   useEffect(() => {
     sendMessageRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
@@ -60,6 +63,10 @@ function Chat() {
 
   const sendMessage = async (e) => {
     e.preventDefault();
+    if (user?.isBanned) {
+      document.getElementById("my_modal_1").showModal();
+      return
+    }
     if (message === "") {
       toast.error("Type a message");
       return;
@@ -287,6 +294,7 @@ function Chat() {
           )}
         </button>
       </form>
+      <BannedMessage />
     </div>
   );
 }
