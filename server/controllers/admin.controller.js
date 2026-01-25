@@ -219,22 +219,6 @@ export const banUser = async (req, res) => {
       user.isBanned = true;
       user.banDuration = new Date(Date.now() + duration);
       await user.save();
-      setTimeout(async () => {
-        try {
-          let updatedUser = await User.findById(userId).select("-password");
-          if (
-            updatedUser &&
-            updatedUser.isBanned &&
-            updatedUser.banDuration <= Date.now()
-          ) {
-            updatedUser.isBanned = false;
-            updatedUser.banDuration = null;
-            await updatedUser.save();
-          }
-        } catch (error) {
-          console.error("Error unbanning user:", error);
-        }
-      }, duration);
       return res
         .status(200)
         .json({ message: "User banned successfully", user });
