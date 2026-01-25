@@ -36,33 +36,6 @@ AskNest is a full-stack web application designed for educational institutions to
 - **Redis Caching**: Performance optimization with Redis
 - **Guest Search Limiting**: Restricted access for unauthenticated users
 
-## Tech Stack
-
-### Frontend
-- **React 19** - UI library
-- **Vite** - Build tool and dev server
-- **Redux Toolkit** - State management
-- **React Router DOM** - Client-side routing
-- **TailwindCSS** - Utility-first CSS framework
-- **DaisyUI** - Component library for TailwindCSS
-- **Socket.IO Client** - Real-time communication
-- **Axios** - HTTP client
-- **React Hot Toast** - Toast notifications
-- **React Markdown** - Markdown rendering
-
-### Backend
-- **Node.js** - Runtime environment
-- **Express.js** - Web framework
-- **MongoDB** - Database (via Mongoose)
-- **Socket.IO** - Real-time bidirectional communication
-- **Redis** - Caching and session management
-- **Cloudinary** - Media storage and CDN
-- **Google Gemini AI** - AI-powered responses
-- **SendGrid** - Email service
-- **JWT** - Authentication tokens
-- **Bcryptjs** - Password hashing
-- **Multer** - File upload handling
-
 ## Project Structure
 
 ```
@@ -91,9 +64,3 @@ AskNest/
     ├── index.js          # Application entry point
     └── package.json
 ```
-
-## Support
-
-For internal support or questions, please contact the development team or refer to internal documentation.
-
----
