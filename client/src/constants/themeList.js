@@ -1,9 +1,9 @@
 export const themeList = [
   { name: "light", color: "#ffffff" },
-  { name: "dark", color: "#1d232a" },
+  { name: "dark", color: "#1C222E" },
   { name: "dracula", color: "#282a36" },
   { name: "synthwave", color: "#2d1b69" },
-  { name: "cyberpunk", color: "#ff7598" },
+  { name: "cyberpunk", color: "#FFF248" },
   { name: "retro", color: "#e4d8b4" },
   { name: "forest", color: "#1b4332" },
   { name: "garden", color: "#2f855a" },
@@ -18,5 +18,5 @@ export const themeList = [
   { name: "coffee", color: "#4b2e2b" },
   { name: "bumblebee", color: "#facc15" },
   { name: "emerald", color: "#10b981" },
-  { name: "acid", color: "#bfff00" },
+  { name: "acid", color: "#F8F8F8" },
 ];

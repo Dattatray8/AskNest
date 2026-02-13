@@ -64,15 +64,16 @@ export const login = async (req, res) => {
         .status(400)
         .json({ success: false, message: "Invalid username or password" });
     }
-    if (
-      user.isBanned &&
-      user.banDuration &&
-      new Date(user.banDuration) <= new Date()
-    ) {
-      user.isBanned = false;
-      user.banDuration = null;
-      user.spamMarkCount = 0;
-      await user.save();
+    console.log(user.isBanned && user.banDuration)
+    if (user.isBanned && user.banDuration) {
+      const banExpiry = new Date(user.banDuration);
+      const now = new Date();
+      if (banExpiry <= now) {
+        user.isBanned = false;
+        user.banDuration = null;
+        user.spamMarkCount = 0;
+        await user.save();
+      }
     }
     const token = await generateToken(user?._id);
     res.cookie("token", token, {
