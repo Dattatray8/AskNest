@@ -18,12 +18,23 @@ function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleSignup = async () => {
+  const handleLogin = async () => {
     for (let key in formValue) {
       if (formValue[key] === "") {
         toast.error(`${key} is empty`);
         return;
       }
+    }
+    const username = document.getElementById("login-username");
+    const password = document.getElementById("login-password");
+
+    if (!username.checkValidity()) {
+      username.reportValidity();
+      return;
+    }
+    if (!password.checkValidity()) {
+      password.reportValidity();
+      return;
     }
     try {
       setLoading(true);
@@ -71,6 +82,7 @@ function Login() {
               <input
                 type="text"
                 required
+                id="login-username"
                 placeholder="Username"
                 pattern="[A-Za-z][A-Za-z0-9\-]*"
                 minLength="3"
@@ -112,10 +124,11 @@ function Login() {
               <input
                 type={showPassword ? "text" : "password"}
                 required
+                id="login-password"
                 placeholder="Password"
                 minLength="6"
                 pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}"
-                title="Must be more than 8 characters, including number, lowercase letter, uppercase letter"
+                title="Must be more than 5 characters, including number, lowercase letter, uppercase letter"
                 onChange={(e) =>
                   setFormValue({ ...formValue, password: e.target.value })
                 }
@@ -144,13 +157,13 @@ function Login() {
           <div
             className="text-blue-500 cursor-pointer pb-2 pl-2"
             onClick={() => {
-              toast("🚧 Feature under development!");
+              navigate("/forgot-password");
             }}
           >
             Forgot Password?
           </div>
           <div className="text-center">
-            <button className="btn w-[95%]" onClick={handleSignup}>
+            <button className="btn w-[95%]" onClick={handleLogin}>
               {loading ? (
                 <span className="loading loading-spinner text-neutral"></span>
               ) : (

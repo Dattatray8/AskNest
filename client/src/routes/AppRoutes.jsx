@@ -15,6 +15,8 @@ import AllUsers from "../pages/AllUsers";
 import FilteredQuestions from "../pages/FilteredQuestions";
 import Reports from "../pages/Reports";
 import Spams from "../pages/Spams";
+import ForgotPass from "../pages/ForgotPass";
+import EmailVerification from "../pages/EmailVerification";
 
 function AppRoutes() {
   return (
@@ -35,6 +37,8 @@ function AppRoutes() {
       <Route path="/spams" element={<Spams />} />
       <Route path="/:tabKey" element={<AllUsers />} />
       <Route path="/questions/:tabKey" element={<FilteredQuestions />} />
+      <Route path="/forgot-password" element={<ForgotPass />} />
+      <Route path="/email-verification" element={<EmailVerification />} />
     </Routes>
   );
 }

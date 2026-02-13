@@ -12,6 +12,7 @@ const io = new Server(server, {
     origin: [
       "https://querysphere.vercel.app",
       "https://query-sphere.onrender.com",
+      "http://localhost:5173",
     ],
     methods: ["GET", "POST"],
   },

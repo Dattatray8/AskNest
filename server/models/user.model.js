@@ -30,15 +30,17 @@ const userSchema = new mongoose.Schema(
     profession: {
       type: String,
     },
-    resetOtp: {
-      type: String,
-    },
-    otpExpires: {
-      type: Date,
-    },
-    isOtpVerified: {
-      type: Boolean,
-      default: false,
+    forgotPassword: {
+      resetOtp: {
+        type: String,
+      },
+      otpExpires: {
+        type: Date,
+      },
+      isOtpVerified: {
+        type: Boolean,
+        default: false,
+      },
     },
     fcmToken: {
       type: String,
@@ -72,6 +74,9 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    banDuration: {
+      type: Date,
+    }
   },
   { timestamps: true }
 );

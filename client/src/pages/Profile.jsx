@@ -15,6 +15,7 @@ import ProfileSkeleton from "../components/profile/ProfileSkeleton";
 import toast from "react-hot-toast";
 import useCurrentUser from "../hooks/auth/useCurrentUser";
 import { useSocket } from "../hooks/useSocket";
+import BanCountdown from "../components/BanCountDown";
 
 function Profile() {
   const { id } = useParams();
@@ -145,13 +146,14 @@ function Profile() {
               </button>
             )}
 
-          {user?.role === "teacher" || profileData?.role === "teacher" &&
-            !user?.isAppliedForTeacherRole &&
-            user?.isTeacher && (
-              <p className="badge badge-dash badge-success self-center">
-                You are a Teacher Now
-              </p>
-            )}
+          {user?.role === "teacher" ||
+            (profileData?.role === "teacher" &&
+              !user?.isAppliedForTeacherRole &&
+              user?.isTeacher && (
+                <p className="badge badge-dash badge-success self-center">
+                  You are a Teacher Now
+                </p>
+              ))}
 
           {user?._id !== profileData?._id && profileData?.isTeacher && (
             <p className="badge badge-dash badge-success self-center">
@@ -169,6 +171,12 @@ function Profile() {
                 Cancel Teacher Role Application
               </button>
             )}
+
+          {user?.isBanned && (
+            <div className="flex flex-col items-center gap-4 border border-error p-4 justify-center rounded-md text-base-content">
+              You are banned for <BanCountdown banDuration={user.banDuration} />
+            </div>
+          )}
 
           <div className="divider my-2">Activities</div>
 

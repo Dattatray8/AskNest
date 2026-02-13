@@ -1,18 +1,19 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { serverUrl } from "../App";
 import { Eye, EyeOff } from "lucide-react";
 import toast from "react-hot-toast";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setUserData } from "../redux/userSlice";
 import { useNavigate } from "react-router-dom";
 
 function Signup() {
   const [loading, setLoading] = useState(false);
+  const { verifiedEmail } = useSelector((state) => state.user);
   const [formValue, setFormValue] = useState({
     role: "",
     userName: "",
-    email: "",
+    email: verifiedEmail,
     password: "",
   });
 
@@ -20,12 +21,33 @@ function Signup() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (verifiedEmail === null) {
+      navigate("/email-verification");
+    }
+  }, [verifiedEmail]);
+
   const handleSignup = async () => {
     for (let key in formValue) {
       if (formValue[key] === "") {
         toast.error(`${key} is empty`);
         return;
       }
+    }
+    const username = document.getElementById("username");
+    const email = document.getElementById("email");
+    const password = document.getElementById("password");
+    if (!username.checkValidity()) {
+      username.reportValidity();
+      return;
+    }
+    if (!email.checkValidity()) {
+      email.reportValidity();
+      return;
+    }
+    if (!password.checkValidity()) {
+      password.reportValidity();
+      return;
     }
     try {
       setLoading(true);
@@ -85,6 +107,7 @@ function Signup() {
               </svg>
               <input
                 type="text"
+                id="username"
                 required
                 placeholder="Username"
                 pattern="[A-Za-z][A-Za-z0-9\-]*"
@@ -121,11 +144,11 @@ function Signup() {
               </svg>
               <input
                 type="email"
+                id="email"
+                disabled={verifiedEmail}
+                defaultValue={verifiedEmail}
                 placeholder="mail@site.com"
                 required
-                onChange={(e) =>
-                  setFormValue({ ...formValue, email: e.target.value })
-                }
               />
             </label>
             <div className="validator-hint hidden text-start pl-2">
@@ -158,10 +181,11 @@ function Signup() {
               <input
                 type={showPassword ? "text" : "password"}
                 required
+                id="password"
                 placeholder="Password"
                 minLength="6"
                 pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}"
-                title="Must be more than 8 characters, including number, lowercase letter, uppercase letter"
+                title="Must be more than 5 characters, including number, lowercase letter, uppercase letter"
                 onChange={(e) =>
                   setFormValue({ ...formValue, password: e.target.value })
                 }

@@ -7,6 +7,7 @@ import axios from "axios";
 import { serverUrl } from "../App";
 import { setAllUsers } from "../redux/adminSlice";
 import useProfileTabData from "../hooks/profile/useProfileTabData";
+import { useState } from "react";
 
 function AllUsers() {
   const { tabKey } = useParams();
@@ -14,6 +15,9 @@ function AllUsers() {
   const navigation = useNavigate();
   let tabLabel = getLabel(tabKey);
   const dispatch = useDispatch();
+  const [load, setLoad] = useState(true);
+  const [toBanUserId, setToBanUserId] = useState(null);
+  const [toUnbanUserId, setToUnbanUserId] = useState(null);
 
   const { loading } = useProfileTabData(tabKey);
 
@@ -72,6 +76,56 @@ function AllUsers() {
       dispatch(setAllUsers(res?.data?.users));
     } catch (error) {
       toast.error(error?.response?.data?.message || error?.message);
+    }
+  };
+
+  const banUser = async (userId) => {
+    try {
+      setToBanUserId(userId);
+      setLoad(true);
+      const res = await axios.post(
+        `${serverUrl}/api/v1/admin/ban/${userId}`,
+        {},
+        { withCredentials: true }
+      );
+      console.log(res.data);
+      dispatch(
+        setAllUsers(
+          allUsers.map((u) => (u._id === res.data.user._id ? res.data.user : u))
+        )
+      );
+      toast.success(res?.data?.message);
+    } catch (error) {
+      console.log(error);
+      setLoad(false);
+      toast.error(error?.response?.data?.message || error?.message);
+    } finally {
+      setLoad(false);
+    }
+  };
+
+  const unbanUser = async (userId) => {
+    try {
+      setToUnbanUserId(userId);
+      setLoad(true);
+      const res = await axios.post(
+        `${serverUrl}/api/v1/admin/unban/${userId}`,
+        {},
+        { withCredentials: true }
+      );
+      console.log(res.data);
+      dispatch(
+        setAllUsers(
+          allUsers.map((u) => (u._id === res.data.user._id ? res.data.user : u))
+        )
+      );
+      toast.success(res?.data?.message);
+    } catch (error) {
+      console.log(error);
+      setLoad(false);
+      toast.error(error?.response?.data?.message || error?.message);
+    } finally {
+      setLoad(false);
     }
   };
 
@@ -137,8 +191,36 @@ function AllUsers() {
                   <td>{user.role}</td>
                   <td>{user.isTeacher ? "Yes" : "No"}</td>
                   <td>
-                    {!user.isTeacher && !user?.isAppliedForTeacherRole ? (
-                      <button className="btn btn-sm btn-error">Ban</button>
+                    {!user.isTeacher &&
+                    !user?.isAppliedForTeacherRole &&
+                    !user?.isBanned ? (
+                      <button
+                        className="btn btn-sm btn-error"
+                        onClick={() => {
+                          banUser(user._id);
+                        }}
+                      >
+                        {load && toBanUserId === user._id ? (
+                          <span className="loading loading-spinner loading-sm"></span>
+                        ) : (
+                          "Ban"
+                        )}
+                      </button>
+                    ) : !user.isAppliedForTeacherRole &&
+                      !user.isTeacher &&
+                      user.isBanned ? (
+                      <button
+                        className="btn btn-sm btn-success"
+                        onClick={() => {
+                          unbanUser(user._id);
+                        }}
+                      >
+                        {load && toUnbanUserId === user._id ? (
+                          <span className="loading loading-spinner loading-sm"></span>
+                        ) : (
+                          "Unban"
+                        )}
+                      </button>
                     ) : (
                       <div>
                         {user?.isAppliedForTeacherRole && !user?.isTeacher && (

@@ -22,6 +22,7 @@ app.use(
     origin: [
       "https://querysphere.vercel.app",
       "https://query-sphere.onrender.com",
+      "http://localhost:5173",
     ],
     credentials: true,
   })

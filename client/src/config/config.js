@@ -1,1 +1,1 @@
-export const serverUrl = "https://queryspherebackend.onrender.com";
+export const serverUrl = "http://localhost:8000";
