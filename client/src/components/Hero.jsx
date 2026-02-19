@@ -6,6 +6,7 @@ import handleChatNavigation from "../utils/handleChatNavigation";
 import SocketContext from "../context/SocketContext";
 import useCurrentUser from "../hooks/auth/useCurrentUser";
 import { useContext } from "react";
+import { Download } from "lucide-react";
 
 function Hero() {
   const { user } = useCurrentUser();
@@ -57,6 +58,17 @@ function Hero() {
                 }
               >
                 Explore Feed
+              </button>
+
+              <button
+                className="btn btn-outline btn-lg"
+                onClick={() =>
+                  window.open(
+                    "https://expo.dev/artifacts/eas/pwKPE27op7SkBcC4fobcP.apk",
+                  )
+                }
+              >
+                Download Android App <Download />
               </button>
             </div>
 
