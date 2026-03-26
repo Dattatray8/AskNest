@@ -4,7 +4,7 @@ A Q&A platform that enables students and teachers to collaborate on academic que
 
 ## Overview
 
-AskNest is a full-stack web application designed for educational institutions to provide a secure, spam-free environment where students can ask questions, receive peer and AI-generated answers, and get teacher verification. The platform features real-time communication, content moderation, and role-based access control.
+QuerSphere is a full-stack web application designed for educational institutions to provide a secure, spam-free environment where students can ask questions, receive peer and AI-generated answers, and get teacher verification. The platform features real-time communication, content moderation, and role-based access control.
 
 ## Features
 
