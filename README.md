@@ -26,12 +26,10 @@ QuerSphere is a full-stack web application designed for educational institutions
 - **Rate Limiting**: Request throttling to prevent abuse
 - **User Bans**: Temporary and permanent ban system with countdown timers
 - **Report System**: Users can report inappropriate content
-- **Email Verification**: OTP-based password reset
 
 ### Additional Features
 - **Search Functionality**: Find users and teachers
 - **User Profiles**: Comprehensive profiles with activity tracking
 - **Theme Support**: Multiple theme options
 - **Responsive Design**: Mobile-friendly interface with TailwindCSS
-- **Redis Caching**: Performance optimization with Redis
 - **Guest Search Limiting**: Restricted access for unauthenticated users
