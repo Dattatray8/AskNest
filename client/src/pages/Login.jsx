@@ -154,14 +154,6 @@ function Login() {
               <br />
             </p>
           </div>
-          <div
-            className="text-blue-500 cursor-pointer pb-2 pl-2"
-            onClick={() => {
-              navigate("/forgot-password");
-            }}
-          >
-            Forgot Password?
-          </div>
           <div className="text-center">
             <button className="btn w-[95%]" onClick={handleLogin}>
               {loading ? (
