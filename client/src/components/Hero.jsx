@@ -64,7 +64,7 @@ function Hero() {
                 className="btn btn-outline btn-lg"
                 onClick={() =>
                   window.open(
-                    "https://expo.dev/artifacts/eas/tzqLAGWEYsRKZsLU8dcAau.apk",
+                    "https://expo.dev/artifacts/eas/aCNfbYwwRi7QEFu1btphWn.apk",
                   )
                 }
               >
